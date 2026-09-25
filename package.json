@@ -3,14 +3,22 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/check-data.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "data:check": "node scripts/check-data.mjs",
+    "data:lock": "node scripts/check-data.mjs --lock"
   },
   "dependencies": {
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
     "3d-force-graph": "1.80.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

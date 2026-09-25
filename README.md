@@ -14,6 +14,15 @@ npm run build      # production build to dist/
 
 Node 18 or later.
 
+## Self-host with Docker + Cloudflare Tunnel
+
+```bash
+cp .env.example .env      # paste your Cloudflare Tunnel token
+docker compose up -d --build
+```
+
+Full guide, including Cloudflare setup, Access and hardening: [DEPLOY.md](DEPLOY.md).
+
 ## Import into Lovable
 
 1. Push this folder to a new GitHub repository (the repo root must be this folder, so `package.json` is at the top level).
@@ -44,17 +53,28 @@ src/
 
 ## Updating the release radar
 
-Release data is a snapshot, not a live feed. The browser can't read help.okta.com directly because of CORS.
+Release data is a snapshot in `src/data/releases.json`, not a live feed. The browser can't read help.okta.com directly because of CORS.
 
-To refresh:
+The data is **hash-locked**. `npm run build` first runs `scripts/check-data.mjs`, which:
 
-1. Add new entries at the top of `RELEASES` in `src/data/releases.ts`. The `parent` must be a release-notes page id from `docsTree.ts` (for example `rn-oie-prod`, `rn-oie-prev`, `rn-wf-prod`, `rn-ispm`).
-2. Flip scheduled entries (`upcoming: true`) to shipped once they deploy, and add the next scheduled dates from the Identity Engine release notes hub.
-3. Bump `SNAPSHOT_DATE`.
+- validates every entry: known product, an existing release-notes parent page, ISO dates, `https://help.okta.com` or `developer.okta.com` URLs, non-empty items, and no "shipped" date after the snapshot date;
+- compares a SHA-256 of `releases.json` with `src/data/releases.lock`, and fails if the JSON changed without a new lock.
 
-A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read and unread state is stored per browser in `localStorage`.
+This exists because an AI editing agent once replaced the whole list with plausible but invented releases. To update:
 
-To make the radar update itself, the next step would be a small scheduled job (for example a Supabase Edge Function or GitHub Action) that fetches the release notes pages server-side, writes `releases.json`, and has the app load that file instead of the static module.
+1. Edit `releases.json`: add entries, flip `upcoming` entries that have shipped, bump `snapshotDate`.
+2. Check each new or changed entry against its `url`.
+3. Run `npm run data:lock`, then commit `releases.json` and `releases.lock` together.
+
+A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read state and the window are stored per browser in `localStorage` (`oda-read`, `oda-win`). Values are validated on load, and the footer has **Clear saved preferences**.
+
+## Privacy and security defaults
+
+- **Fonts:** self-hosted (`@fontsource/*`). The site makes no third-party requests.
+- **Tracking:** no cookies, analytics or tracking. `public/privacy.html` is the privacy notice; fill in the `[PLACEHOLDERS]`.
+- **CSP:** production builds carry a CSP `<meta>` tag (see `vite.config.ts`). The Docker/nginx deployment also sends it as a header, with `frame-ancestors 'none'`.
+- **Fallback and accessibility:** a list view mirrors the 3D map for keyboard and screen-reader users, and opens automatically when the browser has WebGL turned off.
+- **Reduced motion:** turned on in the OS, it disables camera animation, link particles and auto-rotate.
 
 ## Adding pages to the map
 

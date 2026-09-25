@@ -1,0 +1,42 @@
+# Okta Docs Atlas + Cloudflare Tunnel
+# The web container publishes no ports to the internet. cloudflared makes an
+# outbound connection to Cloudflare and forwards requests to http://atlas:8080
+# over the private compose network.
+#
+#   cp .env.example .env    # paste your tunnel token
+#   docker compose up -d --build
+
+services:
+  atlas:
+    build: .
+    image: okta-docs-atlas:latest
+    container_name: okta-docs-atlas
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [web]
+    # LAN-only access for testing. Remove this block once the tunnel works,
+    # or keep it bound to a private interface address.
+    ports:
+      - "${LAN_BIND:-127.0.0.1}:${LAN_PORT:-8080}:8080"
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.9.3
+    container_name: okta-docs-atlas-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in .env}
+    depends_on:
+      atlas:
+        condition: service_healthy
+    security_opt: ["no-new-privileges:true"]
+    networks: [web]
+
+networks:
+  web:
+    name: okta-docs-atlas
