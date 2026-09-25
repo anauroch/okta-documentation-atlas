@@ -1,0 +1,57 @@
+import type { Release } from "./types";
+
+/**
+ * Release entries shown in the Release radar and as amber/grey dots on the map.
+ * Snapshot date: see SNAPSHOT_DATE. To refresh, add new entries at the top of the
+ * list and move scheduled ones from `upcoming: true` to shipped.
+ *
+ * `parent` must match a release-notes page id in docsTree.ts.
+ */
+export const SNAPSHOT_DATE = "2026-09-24";
+
+const RNO = "https://help.okta.com/oie/en-us/content/topics/releasenotes/";
+const RNC = "https://help.okta.com/en-us/content/topics/releasenotes/";
+const WFRN = "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/";
+const ISPMRN = "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm";
+const OAGRN = "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm";
+const AERRN = "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm";
+const MCPRN = "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm";
+
+export const RELEASES: Release[] = [
+  { id: "r-oie-0915", prod: "oie", parent: "rn-oie-prod", ver: "2026.09.0", chan: "Production", date: "2026-09-15", url: RNO + "production.htm",
+    items: ["Cross App Access (XAA) for AI agents and apps, all customers", "Manual MCP server registration, DCR and OIN MCP catalog", "Unified identity for AI agent imports", "REMOTE_DESKTOP and MALWARE_PROXIES zone categories", "Okta Integration Wizard (SSO, SCIM, entitlements, Universal Logout)", "JA4 TLS fingerprints across System Log events", "EA: NFC authenticator, Okta Verify for Linux, Low-Code Sign-In, realm limit 100"] },
+  { id: "r-oie-0917", prod: "oie", parent: "rn-oie-prev", ver: "2026.09.1", chan: "Preview", date: "2026-09-17", url: RNO + "preview.htm",
+    items: ["MCP server custom scopes in separate dialog", "Access Requests: auto-reassign manager tasks on manager change", "Requester timeline view", "Preview org features: Agent Gateway, CIMD for OIDC apps, per-app user identification policy", "SAP SuccessFactors OAuth 2.0 + SAML assertion (Basic Auth removal 20 Nov 2026)", "Workday incremental imports, same-device FastPass enrollment"] },
+  { id: "r-oie-0928", prod: "oie", parent: "rn-oie-prod", ver: "2026.09.1", chan: "Production", date: "2026-09-28", upcoming: true, url: RNO + "okta-relnotes.htm",
+    items: ["Scheduled. Dates are subject to change."] },
+  { id: "r-oie-0930", prod: "oie", parent: "rn-oie-prev", ver: "2026.09.2", chan: "Preview", date: "2026-09-30", upcoming: true, url: RNO + "okta-relnotes.htm",
+    items: ["Scheduled. Dates are subject to change."] },
+  { id: "r-iga-0917", prod: "oie", parent: "rn-oie-iga", ver: "IGA 2026.09.1", chan: "Preview", date: "2026-09-17", url: RNO + "iga/iga-release-notes.htm",
+    items: ["Stage certification campaigns before launch", "Requester timeline view", "Manager-change reassignment of tasks and questions"] },
+  { id: "r-iga-090", prod: "oie", parent: "rn-oie-iga", ver: "IGA 2026.09.0", chan: "Production", date: "2026-09-15", url: RNO + "iga/iga-release-notes.htm",
+    items: ["Certification of AI agent resource connections", "MCP server scopes in campaign reviews", "Access Request limits raised (25 users per task, 1,000 bundles/groups)"] },
+  { id: "r-oce-090", prod: "oce", parent: "rn-oce-prod", ver: "2026.09.0", chan: "Production", date: "2026-09-15", approx: true, url: RNC + "production.htm",
+    items: ["REMOTE_DESKTOP and MALWARE_PROXIES zone categories", "Okta Integration Wizard", "JA4 TLS fingerprinting", "AD/LDAP agent disruption email notifications", "EA: entitlement import safeguards, generic DB connector HA and incremental imports"] },
+  { id: "r-wf-0915", prod: "wf", parent: "rn-wf-prod", ver: "2026.09.0", chan: "Production", date: "2026-09-15", url: WFRN + "production.htm",
+    items: ["Integration Builder GA in Production", "Zscaler connector (13 action cards)", "Data-URI images no longer render in Notes cards"] },
+  { id: "r-wf-0916", prod: "wf", parent: "rn-wf-prev", ver: "2026.09.1", chan: "Preview", date: "2026-09-16", url: WFRN + "preview.htm",
+    items: ["OPA connector: streaming for List Resource Groups", "Fix: List Resource Groups capped at 100", "Fix: Type card misidentified numeric and boolean input"] },
+  { id: "r-wf-0901", prod: "wf", parent: "rn-wf-prod", ver: "2026.08.3", chan: "Production", date: "2026-09-01", url: WFRN + "production.htm",
+    items: ["Integration Builder fixes (OIN Wizard action flows, invocation URLs)", "Folder Manager role dropdown fix"] },
+  { id: "r-ispm-0901", prod: "ispm", parent: "rn-ispm", ver: "1 Sep announcements", chan: "GA + EA", date: "2026-09-01", url: ISPMRN,
+    items: ["AI agent discovery for all ISPM customers", "EA: endpoint shadow AI agents and MCP servers via CrowdStrike Falcon", "Copilot Studio agent discovery GA"] },
+  { id: "r-ispm-0805", prod: "ispm", parent: "rn-ispm", ver: "5 Aug announcements", chan: "EA", date: "2026-08-05", url: ISPMRN,
+    items: ["Advanced inventory filters (Limited EA)", "DORA, NIS2, CAF and TISAX on the Controls page"] },
+  { id: "r-ispm-0603", prod: "ispm", parent: "rn-ispm", ver: "3 Jun announcements", chan: "GA", date: "2026-06-03", url: ISPMRN,
+    items: ["CSV export up to 200,000 rows", "Redesigned outbound integrations, multiple instances per type"] },
+  { id: "r-oag-0805", prod: "oag", parent: "rn-oag", ver: "2026.08.0", chan: "GA", date: "2026-08-05", url: OAGRN,
+    items: ["Third-party library security update (OKTA-1126509)", "SNMPv3 user deletion leaves password entry (fixed)", "Upgrade note: 2026.4.0 or earlier installs okta-release-2026.5.1 first"] },
+  { id: "r-oag-0617", prod: "oag", parent: "rn-oag", ver: "2026.06.0", chan: "GA", date: "2026-06-17", url: OAGRN,
+    items: ["Security enhancements and documentation updates"] },
+  { id: "r-mcp-ea", prod: "mcp", parent: "rn-mcp", ver: "Early Access", chan: "EA", date: null, url: MCPRN,
+    items: ["Okta Managed MCP Server available in Early Access (Core Identity and Identity Governance SKUs)", "No dated entries on the release notes page yet"] },
+  { id: "r-aer-033", prod: "aerial", parent: "rn-aer", ver: "2026.03.3", chan: "GA", date: "2026-03-01", approx: true, url: AERRN,
+    items: ["Fixes for access request conditions and adding managed orgs"] },
+  { id: "r-aer-030", prod: "aerial", parent: "rn-aer", ver: "2026.03.0", chan: "EA", date: "2026-03-01", approx: true, url: AERRN,
+    items: ["Org groups and Aerial member role (EA)"] },
+];
