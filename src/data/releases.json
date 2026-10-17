@@ -1,32 +1,235 @@
 {
-  "snapshotDate": "2026-09-24",
+  "snapshotDate": "2026-10-17",
   "releases": [
     {
-      "id": "r-oie-0915",
+      "id": "r-oie-1028",
+      "prod": "oie",
+      "parent": "rn-oie-prev",
+      "ver": "2026.44.0",
+      "chan": "Preview",
+      "date": "2026-10-28",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
+    {
+      "id": "r-oie-1019",
       "prod": "oie",
       "parent": "rn-oie-prod",
-      "ver": "2026.09.0",
+      "ver": "2026.42.1",
       "chan": "Production",
-      "date": "2026-09-15",
+      "date": "2026-10-19",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
+    {
+      "id": "r-opa-1015",
+      "prod": "oie",
+      "parent": "rn-opa-plat",
+      "ver": "OPA 2026.42.1",
+      "chan": "Production",
+      "date": "2026-10-15",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/privileged-access/opa-release-notes-platform.htm",
+      "items": [
+        "Service account names for SaaS and Universal Directory accounts can be up to 100 characters (was 50)"
+      ]
+    },
+    {
+      "id": "r-oie-1014",
+      "prod": "oie",
+      "parent": "rn-oie-prev",
+      "ver": "2026.42.1",
+      "chan": "Preview",
+      "date": "2026-10-14",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "items": [
+        "Improved MCP server registration experience",
+        "Provisioning for Sumo Logic and Cloudflare",
+        "Gemini Enterprise Agent Platform import integration",
+        "EA: mTLS client authentication for OIDC apps",
+        "EA: Authenticator enrollment sets",
+        "EA: Device Visibility for macOS: Device Bound SSO sessions"
+      ]
+    },
+    {
+      "id": "r-iga-1014",
+      "prod": "oie",
+      "parent": "rn-oie-iga",
+      "ver": "IGA 2026.42.1",
+      "chan": "Preview",
+      "date": "2026-10-14",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/iga/iga-release-notes.htm",
+      "items": [
+        "Certify unmanaged accounts",
+        "Governance Analyzer recommendation update",
+        "New input type for questions in request type"
+      ]
+    },
+    {
+      "id": "r-oce-1014",
+      "prod": "oce",
+      "parent": "rn-oce-prev",
+      "ver": "2026.42.1",
+      "chan": "Preview",
+      "date": "2026-10-14",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "items": [
+        "Provisioning for Sumo Logic and Cloudflare",
+        "Gemini Enterprise Agent Platform import integration",
+        "EA: mTLS client authentication for OIDC apps"
+      ]
+    },
+    {
+      "id": "r-wf-1013",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.41.0",
+      "chan": "Production",
+      "date": "2026-10-13",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "items": [
+        "Workflows version history",
+        "Folder pinning",
+        "Favorite flows and tables",
+        "Role-based access control for folders",
+        "7 fixes"
+      ]
+    },
+    {
+      "id": "r-oie-1012",
+      "prod": "oie",
+      "parent": "rn-oie-prod",
+      "ver": "2026.41.0",
+      "chan": "Production",
+      "date": "2026-10-12",
       "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/production.htm",
       "items": [
-        "Cross App Access (XAA) for AI agents and apps, all customers",
-        "Manual MCP server registration, DCR and OIN MCP catalog",
-        "Unified identity for AI agent imports",
-        "REMOTE_DESKTOP and MALWARE_PROXIES zone categories",
-        "Okta Integration Wizard (SSO, SCIM, entitlements, Universal Logout)",
-        "JA4 TLS fingerprints across System Log events",
-        "EA: NFC authenticator, Okta Verify for Linux, Low-Code Sign-In, realm limit 100"
+        "Version numbers now use year.week: 2026.10.0 became 2026.41.0",
+        "Passkey (FIDO2 WebAuthn) authenticator enabled by default",
+        "Security key PIN support for user verification",
+        "NFC authenticator available with Adaptive MFA",
+        "Import AI agents from Snowflake and Workato",
+        "User identification policy",
+        "Telephony status callbacks for custom providers",
+        "EA: OIN Community Integrations, Self-service registration policy for ITP, Import AI agents from Cursor"
+      ]
+    },
+    {
+      "id": "r-iga-1012",
+      "prod": "oie",
+      "parent": "rn-oie-iga",
+      "ver": "IGA 2026.41.0",
+      "chan": "Production + Preview",
+      "date": "2026-10-12",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/iga/iga-release-notes.htm",
+      "items": [
+        "Account Reconciliation and Entitlement Reconciliation, with results reports",
+        "Configure access to the resource catalog: GA in Production",
+        "Group self-ownership: GA in Production",
+        "Resource collections: GA in Preview",
+        "Convert users from custom to policy without access changes: GA in Preview"
+      ]
+    },
+    {
+      "id": "r-oce-1012",
+      "prod": "oce",
+      "parent": "rn-oce-prod",
+      "ver": "2026.41.0",
+      "chan": "Production",
+      "date": "2026-10-12",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/production.htm",
+      "items": [
+        "Version numbers now use year.week: 2026.10.0 became 2026.41.0",
+        "Radius Agent version 2.28",
+        "Provisioning for Fleet End User Enrollment and Pipedrive",
+        "App branding migration",
+        "Support for SharePoint Server Subscription Edition",
+        "PowerShell scripts for Active Directory",
+        "EA: OIN Community Integrations"
+      ]
+    },
+    {
+      "id": "r-wf-1007",
+      "prod": "wf",
+      "parent": "rn-wf-prev",
+      "ver": "2026.41.0",
+      "chan": "Preview",
+      "date": "2026-10-07",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
+      "items": [
+        "Internal improvements and fixes"
+      ]
+    },
+    {
+      "id": "r-oie-1005",
+      "prod": "oie",
+      "parent": "rn-oie-arch",
+      "ver": "2026.09.2",
+      "chan": "Production",
+      "date": "2026-10-05",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/archive/oie-relnotes-2026.htm",
+      "items": [
+        "Unique MCP server names",
+        "Editable resource URL for MCP servers",
+        "Automatic phishing resistance for FastPass in authentication chains",
+        "Access Requests decision justification",
+        "Sign-In Widget, version 7.49.1",
+        "Provisioning for Kong AI"
+      ]
+    },
+    {
+      "id": "r-aer-041",
+      "prod": "aerial",
+      "parent": "rn-aer",
+      "ver": "2026.41.0",
+      "chan": "GA",
+      "date": "2026-10-01",
+      "approx": true,
+      "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
+      "items": [
+        "Protected Actions email notifications show the cross-org admin's full name and username"
+      ]
+    },
+    {
+      "id": "r-oie-0928",
+      "prod": "oie",
+      "parent": "rn-oie-arch",
+      "ver": "2026.09.1",
+      "chan": "Production",
+      "date": "2026-09-28",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/archive/oie-relnotes-2026.htm",
+      "items": [
+        "CIMD for AI agents",
+        "UI update for MCP server scopes",
+        "Automatic tasks and questions reassignment after a manager change",
+        "Requester timeline view"
+      ]
+    },
+    {
+      "id": "r-opa-0928",
+      "prod": "oie",
+      "parent": "rn-opa-plat",
+      "ver": "OPA 2026.09.3",
+      "chan": "Production",
+      "date": "2026-09-28",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/privileged-access/opa-release-notes-platform.htm",
+      "items": [
+        "Database privileged access management (GA): discover database accounts, rotate and vault credentials, MFA or approval before access"
       ]
     },
     {
       "id": "r-oie-0917",
       "prod": "oie",
-      "parent": "rn-oie-prev",
+      "parent": "rn-oie-arch",
       "ver": "2026.09.1",
       "chan": "Preview",
       "date": "2026-09-17",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/archive/oie-relnotes-2026.htm",
       "items": [
         "MCP server custom scopes in separate dialog",
         "Access Requests: auto-reassign manager tasks on manager change",
@@ -34,32 +237,6 @@
         "Preview org features: Agent Gateway, CIMD for OIDC apps, per-app user identification policy",
         "SAP SuccessFactors OAuth 2.0 + SAML assertion (Basic Auth removal 20 Nov 2026)",
         "Workday incremental imports, same-device FastPass enrollment"
-      ]
-    },
-    {
-      "id": "r-oie-0928",
-      "prod": "oie",
-      "parent": "rn-oie-prod",
-      "ver": "2026.09.1",
-      "chan": "Production",
-      "date": "2026-09-28",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
-      "items": [
-        "Scheduled. Dates are subject to change."
-      ]
-    },
-    {
-      "id": "r-oie-0930",
-      "prod": "oie",
-      "parent": "rn-oie-prev",
-      "ver": "2026.09.2",
-      "chan": "Preview",
-      "date": "2026-09-30",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
-      "items": [
-        "Scheduled. Dates are subject to change."
       ]
     },
     {
@@ -74,6 +251,38 @@
         "Stage certification campaigns before launch",
         "Requester timeline view",
         "Manager-change reassignment of tasks and questions"
+      ]
+    },
+    {
+      "id": "r-wf-0916",
+      "prod": "wf",
+      "parent": "rn-wf-prev",
+      "ver": "2026.09.1",
+      "chan": "Preview",
+      "date": "2026-09-16",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
+      "items": [
+        "OPA connector: streaming for List Resource Groups",
+        "Fix: List Resource Groups capped at 100",
+        "Fix: Type card misidentified numeric and boolean input"
+      ]
+    },
+    {
+      "id": "r-oie-0915",
+      "prod": "oie",
+      "parent": "rn-oie-arch",
+      "ver": "2026.09.0",
+      "chan": "Production",
+      "date": "2026-09-15",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/archive/oie-relnotes-2026.htm",
+      "items": [
+        "Cross App Access (XAA) for AI agents and apps, all customers",
+        "Manual MCP server registration, DCR and OIN MCP catalog",
+        "Unified identity for AI agent imports",
+        "REMOTE_DESKTOP and MALWARE_PROXIES zone categories",
+        "Okta Integration Wizard (SSO, SCIM, entitlements, Universal Logout)",
+        "JA4 TLS fingerprints across System Log events",
+        "EA: NFC authenticator, Okta Verify for Linux, Low-Code Sign-In, realm limit 100"
       ]
     },
     {
@@ -93,12 +302,12 @@
     {
       "id": "r-oce-090",
       "prod": "oce",
-      "parent": "rn-oce-prod",
+      "parent": "rn-oce-arch",
       "ver": "2026.09.0",
       "chan": "Production",
       "date": "2026-09-15",
       "approx": true,
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/production.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/archive/oce-relnotes-2026.htm",
       "items": [
         "REMOTE_DESKTOP and MALWARE_PROXIES zone categories",
         "Okta Integration Wizard",
@@ -119,20 +328,6 @@
         "Integration Builder GA in Production",
         "Zscaler connector (13 action cards)",
         "Data-URI images no longer render in Notes cards"
-      ]
-    },
-    {
-      "id": "r-wf-0916",
-      "prod": "wf",
-      "parent": "rn-wf-prev",
-      "ver": "2026.09.1",
-      "chan": "Preview",
-      "date": "2026-09-16",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
-      "items": [
-        "OPA connector: streaming for List Resource Groups",
-        "Fix: List Resource Groups capped at 100",
-        "Fix: Type card misidentified numeric and boolean input"
       ]
     },
     {
@@ -176,19 +371,6 @@
       ]
     },
     {
-      "id": "r-ispm-0603",
-      "prod": "ispm",
-      "parent": "rn-ispm",
-      "ver": "3 Jun announcements",
-      "chan": "GA",
-      "date": "2026-06-03",
-      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm",
-      "items": [
-        "CSV export up to 200,000 rows",
-        "Redesigned outbound integrations, multiple instances per type"
-      ]
-    },
-    {
       "id": "r-oag-0805",
       "prod": "oag",
       "parent": "rn-oag",
@@ -200,6 +382,19 @@
         "Third-party library security update (OKTA-1126509)",
         "SNMPv3 user deletion leaves password entry (fixed)",
         "Upgrade note: 2026.4.0 or earlier installs okta-release-2026.5.1 first"
+      ]
+    },
+    {
+      "id": "r-aer-083",
+      "prod": "aerial",
+      "parent": "rn-aer",
+      "ver": "2026.08.3",
+      "chan": "GA",
+      "date": "2026-08-01",
+      "approx": true,
+      "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
+      "items": [
+        "Users given the Aerial Member role through a group can request access to managed orgs"
       ]
     },
     {
@@ -215,16 +410,16 @@
       ]
     },
     {
-      "id": "r-mcp-ea",
-      "prod": "mcp",
-      "parent": "rn-mcp",
-      "ver": "Early Access",
-      "chan": "EA",
-      "date": null,
-      "url": "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm",
+      "id": "r-ispm-0603",
+      "prod": "ispm",
+      "parent": "rn-ispm",
+      "ver": "3 Jun announcements",
+      "chan": "GA",
+      "date": "2026-06-03",
+      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm",
       "items": [
-        "Okta Managed MCP Server available in Early Access (Core Identity and Identity Governance SKUs)",
-        "No dated entries on the release notes page yet"
+        "CSV export up to 200,000 rows",
+        "Redesigned outbound integrations, multiple instances per type"
       ]
     },
     {
@@ -251,6 +446,19 @@
       "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
       "items": [
         "Org groups and Aerial member role (EA)"
+      ]
+    },
+    {
+      "id": "r-mcp-ea",
+      "prod": "mcp",
+      "parent": "rn-mcp",
+      "ver": "Early Access",
+      "chan": "EA",
+      "date": null,
+      "url": "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm",
+      "items": [
+        "Okta Managed MCP Server available in Early Access (Core Identity and Identity Governance SKUs)",
+        "No dated entries on the release notes page yet"
       ]
     }
   ]
