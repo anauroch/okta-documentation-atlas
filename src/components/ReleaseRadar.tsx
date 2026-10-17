@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { PRODUCTS } from "@/data/docsTree";
 import { RELEASES } from "@/data/releases";
 import type { ProductKey, Release } from "@/data/types";
-import { isHot, isNew, isUpcoming, relText, WINDOW_CHOICES } from "@/lib/releases";
+import { copyText, isHot, isNew, isUpcoming, relText, shortDate, weekOf, WINDOW_CHOICES } from "@/lib/releases";
 
 type Tab = "latest" | "upcoming" | "feeds";
+type Show = "all" | "unread" | "since";
 
 interface Props {
   winDays: number;
@@ -13,25 +14,44 @@ interface Props {
   setRead: (s: Set<string>) => void;
   hidden: Set<ProductKey>;
   onShow: (id: string) => void;
+  /** date (YYYY-MM-DD) of the viewer's previous visit, null on a first visit */
+  lastVisit: string | null;
 }
 
-export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidden, onShow }: Props) {
+/** Markdown bullets for pasting into an email, Teams or a customer update. */
+function summarise(rs: Release[]): string {
+  return rs.map((r) => {
+    const wk = weekOf(r.ver);
+    const head = `${PRODUCTS[r.prod].name} ${r.ver}${wk ? ` (week ${wk})` : ""}, ${r.chan}, ${shortDate(r)}`;
+    return `- **${head}**: ${r.items.join("; ")}\n  ${r.url}`;
+  }).join("\n");
+}
+
+export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidden, onShow, lastVisit }: Props) {
   const [tab, setTab] = useState<Tab>("latest");
-  const [unreadOnly, setUnreadOnly] = useState(false);
+  const [show, setShow] = useState<Show>("all");
+  const [copied, setCopied] = useState<"" | "ok" | "fail">("");
 
   const hotCount = RELEASES.filter((r) => isHot(r, winDays, read)).length;
+  const sinceCount = lastVisit ? RELEASES.filter((r) => !isUpcoming(r) && !!r.date && !r.approx && r.date > lastVisit).length : 0;
 
   const list = useMemo(() => {
     let rs = RELEASES.filter((r) => !hidden.has(r.prod));
     rs = tab === "upcoming"
       ? rs.filter((r) => isUpcoming(r)).sort((a, b) => (a.date || "").localeCompare(b.date || ""))
       : rs.filter((r) => !isUpcoming(r)).sort((a, b) => (b.date || "0").localeCompare(a.date || "0"));
-    if (unreadOnly && tab === "latest") rs = rs.filter((r) => isHot(r, winDays, read));
+    if (tab === "latest" && show === "unread") rs = rs.filter((r) => isHot(r, winDays, read));
+    if (tab === "latest" && show === "since") rs = lastVisit ? rs.filter((r) => !!r.date && !r.approx && r.date > lastVisit) : [];
     return rs;
-  }, [tab, unreadOnly, hidden, winDays, read]);
+  }, [tab, show, hidden, winDays, read, lastVisit]);
 
   const toggle = (id: string) => { const s = new Set(read); if (s.has(id)) s.delete(id); else s.add(id); setRead(s); };
   const markAll = () => { const s = new Set(read); RELEASES.filter((r) => isNew(r, winDays)).forEach((r) => s.add(r.id)); setRead(s); };
+  const copy = async () => {
+    const ok = await copyText(summarise(list));
+    setCopied(ok ? "ok" : "fail");
+    setTimeout(() => setCopied(""), 2500);
+  };
 
   return (
     <div className="card">
@@ -47,9 +67,14 @@ export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidde
         <select id="win" value={winDays} onChange={(e) => setWinDays(+e.target.value)}>
           {WINDOW_CHOICES.map((d) => <option key={d} value={d}>{d} days</option>)}
         </select>
-        <label className="eyebrow flex items-center gap-1.5">
-          <input id="unreadOnly" type="checkbox" checked={unreadOnly} onChange={(e) => setUnreadOnly(e.target.checked)} /> Unread only
-        </label>
+        <label htmlFor="show" className="eyebrow">Show</label>
+        <select id="show" value={show} onChange={(e) => setShow(e.target.value as Show)}>
+          <option value="all">All</option>
+          <option value="unread">Unread</option>
+          <option value="since" disabled={!lastVisit}>
+            {lastVisit ? `Since last visit (${sinceCount})` : "Since last visit (first visit)"}
+          </option>
+        </select>
       </div>
       <div className="tabs" role="tablist">
         {([["latest", "Latest"], ["upcoming", "Upcoming"], ["feeds", "Where to follow"]] as [Tab, string][]).map(([k, l]) => (
@@ -58,10 +83,22 @@ export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidde
       </div>
 
       {tab === "feeds" ? <Feeds /> : (
-        <ul className="rlist">
-          {list.length === 0 && <li className="empty">Nothing here for the current filters.</li>}
-          {list.map((r) => <Item key={r.id} r={r} winDays={winDays} read={read} onToggle={toggle} onShow={onShow} />)}
-        </ul>
+        <>
+          <div className="list-tools">
+            <span className="eyebrow">{list.length} {list.length === 1 ? "entry" : "entries"}</span>
+            <button className="btn" onClick={copy} disabled={!list.length} aria-live="polite">
+              {copied === "ok" ? "Copied" : copied === "fail" ? "Copy failed: select and copy manually" : "Copy summary"}
+            </button>
+          </div>
+          <ul className="rlist">
+            {list.length === 0 && (
+              <li className="empty">
+                {show === "since" ? `Nothing new since your last visit on ${lastVisit}.` : "Nothing here for the current filters."}
+              </li>
+            )}
+            {list.map((r) => <Item key={r.id} r={r} winDays={winDays} read={read} onToggle={toggle} onShow={onShow} />)}
+          </ul>
+        </>
       )}
     </div>
   );
@@ -69,16 +106,17 @@ export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidde
 
 function Item({ r, winDays, read, onToggle, onShow }: { r: Release; winDays: number; read: Set<string>; onToggle: (id: string) => void; onShow: (id: string) => void }) {
   const up = isUpcoming(r), nw = isNew(r, winDays), rd = read.has(r.id);
+  const wk = weekOf(r.ver);
   const cls = "rel-item" + (up ? " is-up" : nw && !rd ? " is-new" : "") + (rd && nw ? " read" : "");
   return (
-    <li className={cls}>
+    <li className={cls} id={`rel-${r.id}`}>
       <div className="row">
         <span className="prod"><i style={{ background: PRODUCTS[r.prod].color }} />{PRODUCTS[r.prod].name}</span>
         <span className="pill">{r.chan}</span>
         {up ? <span className="pill up">Upcoming</span> : nw && !rd ? <span className="pill new">New</span> : null}
         <span className="when">{relText(r)}</span>
       </div>
-      <div className="ver">{r.ver}</div>
+      <div className="ver">{r.ver}{wk && <span className="wk" title="Okta versions are year.week since October 2026">week {wk}</span>}</div>
       <ul>{r.items.map((i) => <li key={i}>{i}</li>)}</ul>
       <div className="acts">
         <a href={r.url} target="_blank" rel="noopener noreferrer">Read notes ↗</a>
@@ -94,7 +132,7 @@ function Feeds() {
     <div className="feeds">
       <p className="mt-2.5 mb-1">Release cadence differs per product. What to watch:</p>
       <ul>
-        <li><b>Identity Engine / Classic:</b> monthly release (x.0) to Preview first, Production about a week later, then weekly updates (x.1, x.2…). Check the Preview page for "Preview org features" before they reach Production.</li>
+        <li><b>Identity Engine / Classic:</b> since October 2026 versions are year.week (2026.41.0 is week 41). Releases reach Preview first and Production about a week later, with weekly updates (.1, .2) in between. Check the Preview page for "Preview org features" before they reach Production.</li>
         <li><b>Workflows:</b> own Preview/Production pages, roughly weekly.</li>
         <li><b>Identity Governance &amp; Privileged Access:</b> separate notes under the Identity Engine release notes hub.</li>
         <li><b>ISPM:</b> dated announcements, a few per month.</li>
