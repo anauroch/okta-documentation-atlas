@@ -172,3 +172,17 @@ code{font-family:var(--mono);font-size:.92em}
 .listview .pill{margin-left:6px}
 .brand{flex-wrap:wrap;row-gap:4px}
 .brand h1{white-space:nowrap}
+
+/* Week number next to year.week versions (2026.41.0 = week 41) */
+.wk{font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:8px;vertical-align:2px;white-space:nowrap}
+.list-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.detail-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px}
+.detail-acts .open{margin-top:0}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Phones: comfortable tap targets */
+@media (max-width: 760px){
+  .btn,.seg button,.tabs button,.chip,.zoom .grp button,.acts button,.acts a,.foot-links a,.foot-links button,.radar-tools select,.zoom select{min-height:40px}
+  .acts{gap:16px}
+  .acts a,.acts button,.foot-links a,.foot-links button{display:inline-flex;align-items:center}
+}
