@@ -2,7 +2,7 @@
 
 An interactive 3D map of [help.okta.com](https://help.okta.com/en-us/content/index.htm), showing the product doc sets, their sections and pages, and the release notes. A **Release radar** flags new and upcoming releases across Identity Engine, IGA, Classic Engine, Workflows, ISPM, Access Gateway, Managed MCP Server and Aerial.
 
-Stack: Vite 5 · React 18 · TypeScript · Tailwind CSS 3 · [3d-force-graph](https://github.com/vasturiano/3d-force-graph). No backend, no secrets, no environment variables.
+Stack: Vite 5 · React 18 · TypeScript · Tailwind CSS 3 · [3d-force-graph](https://github.com/vasturiano/3d-force-graph). No backend, no secrets, no environment variables. Published through Lovable: https://okta-docs-atlas.lovable.app/
 
 ## Run locally
 
@@ -13,15 +13,6 @@ npm run build      # production build to dist/
 ```
 
 Node 18 or later.
-
-## Self-host with Docker + Cloudflare Tunnel
-
-```bash
-cp .env.example .env      # paste your Cloudflare Tunnel token
-docker compose up -d --build
-```
-
-Full guide, including Cloudflare setup, Access and hardening: [DEPLOY.md](DEPLOY.md).
 
 ## Import into Lovable
 
@@ -72,7 +63,7 @@ A release counts as **New** when it shipped within the window the viewer picks (
 
 - **Fonts:** self-hosted (`@fontsource/*`). The site makes no third-party requests.
 - **Tracking:** no cookies, analytics or tracking. `public/privacy.html` is the privacy notice; fill in the `[PLACEHOLDERS]`.
-- **CSP:** production builds carry a CSP `<meta>` tag (see `vite.config.ts`). The Docker/nginx deployment also sends it as a header, with `frame-ancestors 'none'`.
+- **CSP:** production builds carry a CSP `<meta>` tag (see `vite.config.ts`). Hosts that allow response headers should also send it as a header, with `frame-ancestors 'none'`.
 - **Fallback and accessibility:** a list view mirrors the 3D map for keyboard and screen-reader users, and opens automatically when the browser has WebGL turned off.
 - **Reduced motion:** turned on in the OS, it disables camera animation, link particles and auto-rotate.
 
