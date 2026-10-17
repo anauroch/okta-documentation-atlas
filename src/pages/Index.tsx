@@ -3,10 +3,10 @@ import type { AtlasGraphHandle, Mode } from "@/components/AtlasGraph";
 import ReleaseRadar from "@/components/ReleaseRadar";
 import DetailCard from "@/components/DetailCard";
 import ListView from "@/components/ListView";
-import { LINKS, NODES } from "@/data/docsTree";
+import { BY_ID, LINKS, NODES } from "@/data/docsTree";
 import { RELEASES, SNAPSHOT_DATE } from "@/data/releases";
 import type { ProductKey } from "@/data/types";
-import { store, WINDOW_CHOICES } from "@/lib/releases";
+import { rollLastVisit, store, WINDOW_CHOICES } from "@/lib/releases";
 
 // three.js is ~1.4 MB: load it only when the map view is shown
 const AtlasGraph = lazy(() => import("@/components/AtlasGraph"));
@@ -15,6 +15,15 @@ type View = "map" | "list";
 
 const snapLabel = new Date(SNAPSHOT_DATE + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 const RELEASE_IDS = new Set(RELEASES.map((r) => r.id));
+
+// Read once per page load: the previous visit date, then today's date is stored for next time.
+const LAST_VISIT = rollLastVisit();
+
+/** Phones get the list view first: the 3D map is hard to use on a small touch screen. */
+const isNarrow = () => typeof matchMedia === "function" && matchMedia("(max-width: 760px)").matches;
+
+/** Node id from the URL hash (#r-oie-1012), if it names a node in the map. */
+const hashId = () => { const h = decodeURIComponent(location.hash.slice(1)); return h && BY_ID[h] ? h : null; };
 
 function hasWebGL(): boolean {
   try {
@@ -26,14 +35,14 @@ function hasWebGL(): boolean {
 export default function Index() {
   const graph = useRef<AtlasGraphHandle>(null);
   const webgl = useMemo(hasWebGL, []);
-  const [view, setView] = useState<View>(webgl ? "map" : "list");
+  const [view, setView] = useState<View>(webgl && !isNarrow() ? "map" : "list");
   const [mode, setMode] = useState<Mode>("all");
   const [hidden, setHidden] = useState<Set<ProductKey>>(new Set());
   const [queryInput, setQueryInput] = useState("");
   const [query, setQuery] = useState("");
   const [winDays, setWinDaysState] = useState<number>(() => store.getChoice("oda-win", WINDOW_CHOICES, 14));
   const [read, setReadState] = useState<Set<string>>(() => new Set(store.getIds("oda-read", RELEASE_IDS)));
-  const [selectedId, setSelectedId] = useState("root");
+  const [selectedId, setSelectedId] = useState(() => hashId() ?? "root");
   const [cleared, setCleared] = useState(false);
 
   const setWinDays = (n: number) => { setWinDaysState(n); store.set("oda-win", n); };
@@ -49,6 +58,29 @@ export default function Index() {
     });
     if (fly) graph.current?.flyTo(id);
   }, []);
+
+  // Deep links: keep the URL hash in sync with the selection so it can be shared,
+  // and react when someone pastes or edits a hash.
+  useEffect(() => {
+    const want = selectedId === "root" ? "" : `#${selectedId}`;
+    if (location.hash !== want) history.replaceState(null, "", want || location.pathname + location.search);
+  }, [selectedId]);
+  useEffect(() => {
+    const open = () => {
+      const id = hashId(); if (!id) return;
+      select(id);
+      document.getElementById(`rel-${id}`)?.scrollIntoView({ block: "nearest" });
+      // the 3D map is lazy-loaded: wait for it before flying to the node
+      const tryGraph = (n: number) => {
+        if (graph.current) { graph.current.flyTo(id); graph.current.openPopover(id); }
+        else if (n < 40) setTimeout(() => tryGraph(n + 1), 250);
+      };
+      tryGraph(0);
+    };
+    open(); // initial load: the graph retries until the layout has positions
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, [select]);
 
   // debounced search that flies to the first hit
   useEffect(() => {
@@ -116,7 +148,7 @@ export default function Index() {
         )}
 
         <aside className="side">
-          <ReleaseRadar winDays={winDays} setWinDays={setWinDays} read={read} setRead={setRead} hidden={hidden}
+          <ReleaseRadar winDays={winDays} setWinDays={setWinDays} read={read} setRead={setRead} hidden={hidden} lastVisit={LAST_VISIT}
             onShow={(id) => (view === "map" ? showOnMap(id) : select(id))} />
           <DetailCard id={selectedId} winDays={winDays}
             onSelect={(id) => (view === "map" ? showOnMap(id) : select(id))} />
