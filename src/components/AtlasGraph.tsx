@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import ForceGraph3D from "3d-force-graph";
 import { BY_ID, LINKS, NODES, PRODUCTS, pathOf } from "@/data/docsTree";
 import type { AtlasLink, AtlasNode, ProductKey } from "@/data/types";
-import { isHot, isNew, isUpcoming } from "@/lib/releases";
+import { isHot, isNew, isUpcoming, weekOf } from "@/lib/releases";
 
 export type Mode = "all" | "docs" | "rn";
 
@@ -87,10 +87,20 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   const rebuildLabels = () => {
     const box = labelsEl.current; if (!box) return;
     const sel = propsRef.current.selectedId;
+    // Only the newest "new" release per product gets a permanent label; the rest show when you zoom in.
+    const newestHot = new Map<string, AtlasNode>();
+    NODES.forEach((n) => {
+      if (!visible(n) || !hot(n) || !n.rel?.date) return;
+      // IGA and OPA releases sit under Identity Engine but get their own label
+      const key = n.prod + ":" + (/^(IGA|OPA) /.test(n.rel.ver) ? n.rel.ver.slice(0, 3) : "");
+      const cur = newestHot.get(key);
+      if (!cur || n.rel.date > (cur.rel!.date || "")) newestHot.set(key, n);
+    });
+    const featured = new Set([...newestHot.values()].map((n) => n.id));
     const set: AtlasNode[] = [];
     NODES.forEach((n) => {
       if (!visible(n)) return;
-      n._near = !(n.level <= 1 || hot(n) || n.id === sel || matches(n));
+      n._near = !(n.level <= 1 || featured.has(n.id) || n.id === sel || matches(n));
       set.push(n);
     });
     current.current = set;
@@ -104,10 +114,11 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
         d.addEventListener("click", () => { propsRef.current.onSelect(n.id); setPopId(n.id); });
         box.appendChild(d); lblEls.current[n.id] = d;
       }
-      const h = hot(n);
+      const h = hot(n) && !n._near;
       d.className = "lbl " + (n._near ? "l3" : n.level === 0 ? "l0" : n.level === 1 ? "l1" : "") + (h ? " rel" : "") +
         (!n._near && (matches(n) || (n.id === sel && !h && n.level > 1)) ? " hit" : "");
-      d.textContent = n.kind === "release" && n.rel ? `${PRODUCTS[n.prod].name} ${n.rel.ver}` : n.label;
+      const wk = n.rel ? weekOf(n.rel.ver) : null;
+      d.textContent = n.kind === "release" && n.rel ? `${PRODUCTS[n.prod].name} ${n.rel.ver}${wk ? ` · wk ${wk}` : ""}` : n.label;
       d.style.color = n.level === 1 && n.prod !== "res" ? PRODUCTS[n.prod].color : "";
     });
   };
@@ -118,8 +129,10 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       .linkDirectionalParticles(G.linkDirectionalParticles()).nodeVisibility(G.nodeVisibility()).linkVisibility(G.linkVisibility());
   };
 
-  const flyTo = (id: string) => {
-    const G = graph.current; const n = BY_ID[id]; if (!G || !n || n.x == null) return;
+  const flyTo = (id: string, tries = 0) => {
+    const G = graph.current; const n = BY_ID[id]; if (!n) return;
+    // deep links arrive before the force layout has positions: retry for up to ~10 s
+    if (!G || n.x == null) { if (tries < 30) setTimeout(() => flyTo(id, tries + 1), 350); return; }
     const d = n.level === 0 ? 520 : n.level === 1 ? 330 : 150;
     const r = Math.hypot(n.x, n.y!, n.z!) || 1;
     G.cameraPosition({ x: n.x * (1 + d / r), y: n.y! * (1 + d / r), z: n.z! * (1 + d / r) }, n, reducedMotion() ? 0 : 900);
@@ -131,7 +144,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     G.cameraPosition({ x: t.x + (cam.x - t.x) * f, y: t.y + (cam.y - t.y) * f, z: t.z + (cam.z - t.z) * f }, t, reducedMotion() ? 0 : 350);
   };
 
-  useImperativeHandle(ref, () => ({ flyTo, openPopover: (id) => setPopId(id), fit }));
+  useImperativeHandle(ref, () => ({ flyTo: (id: string) => flyTo(id), openPopover: (id) => setPopId(id), fit }));
 
   /* ---------- mount once ---------- */
   useEffect(() => {
