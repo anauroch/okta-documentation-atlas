@@ -34,7 +34,7 @@ export function relText(r: Release): string {
 
 /* Per-viewer storage. Wrapped because private windows can throw, and validated because
    anything in localStorage can be edited by the user or another script on the origin. */
-export const STORAGE_KEYS = ["oda-read", "oda-win"] as const;
+export const STORAGE_KEYS = ["oda-read", "oda-win", "oda-seen"] as const;
 
 export const store = {
   get<T>(k: string, d: T): T { try { const v = localStorage.getItem(k); return v == null ? d : (JSON.parse(v) as T); } catch { return d; } },
@@ -53,3 +53,43 @@ export const store = {
 };
 
 export const WINDOW_CHOICES = [7, 14, 30, 90] as const;
+
+/**
+ * Okta switched to year.week versions in October 2026 (2026.10.0 became 2026.41.0).
+ * Returns the week number for year.week versions, or null for the older year.month ones.
+ */
+export function weekOf(ver: string): number | null {
+  const m = ver.match(/(\d{4})\.(\d{2})\.\d+/);
+  if (!m) return null;
+  const n = Number(m[2]);
+  return n > 12 && n <= 53 ? n : null;
+}
+
+/** Short date for summaries, e.g. "12 Oct 2026" or "Oct 2026" when only the month is known. */
+export function shortDate(r: Release): string {
+  if (!r.date) return "undated";
+  return at(r.date).toLocaleDateString("en-GB", r.approx ? { month: "short", year: "numeric" } : { day: "numeric", month: "short", year: "numeric" });
+}
+
+/**
+ * Last-visit tracking for the "Since last visit" filter. `previous` is the visit before this one
+ * (null on a first visit); the current time is stored for next time.
+ */
+export function rollLastVisit(): string | null {
+  const prev = store.get<unknown>("oda-seen", null);
+  const valid = typeof prev === "string" && /^\d{4}-\d{2}-\d{2}$/.test(prev) ? prev : null;
+  store.set("oda-seen", new Date().toISOString().slice(0, 10));
+  return valid;
+}
+
+/** Copy text to the clipboard; falls back to a hidden textarea when the async API is refused. */
+export async function copyText(text: string): Promise<boolean> {
+  try { await navigator.clipboard.writeText(text); return true; } catch { /* fall back */ }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove(); return ok;
+  } catch { return false; }
+}
