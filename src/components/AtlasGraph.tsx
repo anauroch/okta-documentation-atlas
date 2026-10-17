@@ -29,6 +29,7 @@ type Graph = any;
 
 const css = (n: string) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const nodeOf = (x: string | AtlasNode) => (typeof x === "string" ? BY_ID[x] : x);
+const reducedMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasGraph(props, ref) {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -43,11 +44,14 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   const [popId, setPopId] = useState<string | null>(null);
   const popIdRef = useRef<string | null>(null);
   popIdRef.current = popId;
+  useEffect(() => { dirty.current = true; }, [popId]);
   const [rotating, setRotating] = useState(false);
 
   const lblEls = useRef<Record<string, HTMLDivElement>>({});
   const current = useRef<AtlasNode[]>([]);
   const fitDist = useRef<number | null>(null);
+  /** set when labels or the popover must be repositioned even if the camera did not move */
+  const dirty = useRef(true);
 
   /* ---------- predicates reading the latest props ---------- */
   const visible = (n: AtlasNode) => {
@@ -90,6 +94,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       set.push(n);
     });
     current.current = set;
+    dirty.current = true;
     const keep = new Set(set.map((n) => n.id));
     Object.keys(lblEls.current).forEach((id) => { if (!keep.has(id)) { lblEls.current[id].remove(); delete lblEls.current[id]; } });
     set.forEach((n) => {
@@ -117,13 +122,13 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     const G = graph.current; const n = BY_ID[id]; if (!G || !n || n.x == null) return;
     const d = n.level === 0 ? 520 : n.level === 1 ? 330 : 150;
     const r = Math.hypot(n.x, n.y!, n.z!) || 1;
-    G.cameraPosition({ x: n.x * (1 + d / r), y: n.y! * (1 + d / r), z: n.z! * (1 + d / r) }, n, 900);
+    G.cameraPosition({ x: n.x * (1 + d / r), y: n.y! * (1 + d / r), z: n.z! * (1 + d / r) }, n, reducedMotion() ? 0 : 900);
   };
   const fit = () => { setPopId(null); graph.current?.zoomToFit(800, 30); };
   const dolly = (f: number) => {
     const G = graph.current; if (!G) return;
     const cam = G.camera().position, t = G.controls().target || { x: 0, y: 0, z: 0 };
-    G.cameraPosition({ x: t.x + (cam.x - t.x) * f, y: t.y + (cam.y - t.y) * f, z: t.z + (cam.z - t.z) * f }, t, 350);
+    G.cameraPosition({ x: t.x + (cam.x - t.x) * f, y: t.y + (cam.y - t.y) * f, z: t.z + (cam.z - t.z) * f }, t, reducedMotion() ? 0 : 350);
   };
 
   useImperativeHandle(ref, () => ({ flyTo, openPopover: (id) => setPopId(id), fit }));
@@ -149,13 +154,14 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       .linkColor((l: AtlasLink) => (hot(target(l)) ? css("--new") : css("--link")))
       .linkWidth((l: AtlasLink) => (hot(target(l)) ? 1.2 : target(l).level === 1 ? 0.8 : 0))
       .linkOpacity(0.55)
-      .linkDirectionalParticles((l: AtlasLink) => (hot(target(l)) ? 4 : 0))
+      .linkDirectionalParticles((l: AtlasLink) => (hot(target(l)) && !reducedMotion() ? 4 : 0))
       .linkDirectionalParticleWidth(2.4)
       .linkDirectionalParticleSpeed(0.012)
       .linkDirectionalParticleColor(() => css("--new"))
       .onNodeClick((n: AtlasNode) => { propsRef.current.onSelect(n.id); setPopId(n.id); })
       .onNodeHover((n: AtlasNode | null) => { el.style.cursor = n ? "pointer" : ""; })
-      .onBackgroundClick(() => setPopId(null));
+      .onBackgroundClick(() => setPopId(null))
+      .onEngineTick(() => { dirty.current = true; });
     G.d3Force("link").distance((l: AtlasLink) => { const t = target(l); return t.level === 1 ? 90 : t.kind === "release" ? 26 : t.level === 2 ? 40 : 18; });
     G.d3Force("charge").strength((n: AtlasNode) => (n.level <= 1 ? -260 : -30));
     let fitted = false;
@@ -165,12 +171,19 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     });
     graph.current = G;
 
-    const resize = () => { const r = stage.getBoundingClientRect(); G.width(r.width).height(r.height); };
+    const resize = () => { const r = stage.getBoundingClientRect(); G.width(r.width).height(r.height); dirty.current = true; };
     const ro = new ResizeObserver(resize); ro.observe(stage); resize();
 
     let raf = 0;
+    let lastSig = "";
     const tick = () => {
+      raf = requestAnimationFrame(tick);
       const cam = G.camera().position; const box = labelsEl.current!;
+      const tg = G.controls().target || { x: 0, y: 0, z: 0 };
+      // Only reposition ~250 labels when the view actually changed: saves CPU/battery when idle
+      const sig = [cam.x, cam.y, cam.z, tg.x, tg.y, tg.z].map((v: number) => v.toFixed(2)).join(",");
+      if (sig === lastSig && !dirty.current) return;
+      lastSig = sig; dirty.current = false;
       current.current.forEach((n) => {
         const d = lblEls.current[n.id]; if (!d || n.x == null) return;
         const c = G.graph2ScreenCoords(n.x, n.y, n.z);
@@ -192,7 +205,6 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       const t = G.controls().target || { x: 0, y: 0, z: 0 };
       const dist = Math.hypot(cam.x - t.x, cam.y - t.y, cam.z - t.z);
       if (fitDist.current && zoomLvl.current) zoomLvl.current.textContent = `zoom ${Math.round((fitDist.current / dist) * 100)}%`;
-      raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
 
@@ -232,7 +244,9 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
           <button onClick={() => dolly(0.7)} title="Zoom in" aria-label="Zoom in">+</button>
           <button onClick={() => dolly(1.4)} title="Zoom out" aria-label="Zoom out">−</button>
           <button onClick={fit} title="Fit whole map" aria-label="Fit whole map">⤢</button>
-          <button onClick={() => setRotating((r) => !r)} title="Auto-rotate" aria-label="Auto-rotate" aria-pressed={rotating}>⟳</button>
+          {!reducedMotion() && (
+            <button onClick={() => setRotating((r) => !r)} title="Auto-rotate" aria-label="Auto-rotate" aria-pressed={rotating}>⟳</button>
+          )}
         </div>
         <select id="z-focus" aria-label="Fly to product" value=""
           onChange={(e) => { const id = e.target.value; if (id) { props.onSelect(id); flyTo(id); setPopId(id); } }}>
