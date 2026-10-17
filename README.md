@@ -71,9 +71,11 @@ A release counts as **New** when it shipped within the window the viewer picks (
 
 In `src/data/docsTree.ts`, call `add(id, label, url, product, parentId)` for one page or `many(parentId, product, baseUrl, [[id, label, path], ...])` for a list. Ids must be unique, and a parent must be added before its children. Otherwise the build throws with the offending id.
 
-## Data notes (snapshot 24 Sep 2026)
+## Data notes (snapshot 17 Oct 2026)
 
-- The map covers the main sections, not every page (Identity Engine and Access Gateway have 500+ pages each).
-- The Classic Engine 2026.09.0 production date is an estimate; the hub page's release table was out of date when this snapshot was taken.
-- Aerial release notes give months only. The Managed MCP Server release notes have no dated entries yet.
-- Some deep links use Okta's context-sensitive help redirect (`okta_help.htm?type=…&id=…`).
+- The map covers the main sections, not every page (Identity Engine and Access Gateway have 500+ pages each). Direct help.okta.com links were checked on 17 Oct 2026; four that returned 404 were fixed or removed. Links through `okta_help.htm?id=…` resolve in the browser and weren't status-checked.
+- From October 2026, Okta versions use year.week instead of year.month: 2026.10.0 became 2026.41.0. Weekly updates keep the `.1`, `.2` suffix.
+- The Production and Preview pages show only the latest release. Older entries link to the 2026 archive page, where Okta moves them.
+- Identity Governance notes carry no dates; IGA entries use the date of the matching Identity Engine release. Aerial notes give no dates; Aerial entries show the month only.
+- The Classic Engine 2026.09.0 production date is an estimate.
+- The Managed MCP Server release notes have no dated entries yet.
