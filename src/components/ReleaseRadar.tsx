@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { PRODUCTS } from "@/data/docsTree";
 import { RELEASES } from "@/data/releases";
 import type { ProductKey, Release } from "@/data/types";
-import { isHot, isNew, isUpcoming, relText } from "@/lib/releases";
+import { isHot, isNew, isUpcoming, relText, WINDOW_CHOICES } from "@/lib/releases";
 
 type Tab = "latest" | "upcoming" | "feeds";
 
@@ -45,7 +45,7 @@ export default function ReleaseRadar({ winDays, setWinDays, read, setRead, hidde
       <div className="radar-tools">
         <label htmlFor="win" className="eyebrow">Flag as new within</label>
         <select id="win" value={winDays} onChange={(e) => setWinDays(+e.target.value)}>
-          {[7, 14, 30, 90].map((d) => <option key={d} value={d}>{d} days</option>)}
+          {WINDOW_CHOICES.map((d) => <option key={d} value={d}>{d} days</option>)}
         </select>
         <label className="eyebrow flex items-center gap-1.5">
           <input id="unreadOnly" type="checkbox" checked={unreadOnly} onChange={(e) => setUnreadOnly(e.target.checked)} /> Unread only
@@ -101,7 +101,7 @@ function Feeds() {
         <li><b>Access Gateway:</b> versioned appliance releases, each supported for one year.</li>
         <li><b>API changes:</b> <a href="https://developer.okta.com/docs/release-notes/" target="_blank" rel="noopener noreferrer">developer.okta.com release notes</a> publish an RSS feed per category.</li>
       </ul>
-      <p className="mt-2 text-ink-3">Release data lives in <code>src/data/releases.ts</code>. Update that file to refresh the radar.</p>
+      <p className="mt-2 text-ink-3">Every entry links to the Okta page it was taken from. Snapshot, not a live feed: check the linked release notes before acting on anything here.</p>
     </div>
   );
 }
