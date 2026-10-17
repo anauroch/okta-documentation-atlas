@@ -57,12 +57,12 @@ This exists because an AI editing agent once replaced the whole list with plausi
 2. Check each new or changed entry against its `url`.
 3. Run `npm run data:lock`, then commit `releases.json` and `releases.lock` together.
 
-A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read state and the window are stored per browser in `localStorage` (`oda-read`, `oda-win`). Values are validated on load, and the footer has **Clear saved preferences**.
+A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read state, the window and the last-visit date are stored per browser in `localStorage` (`oda-read`, `oda-win`, `oda-seen`). Values are validated on load, and the footer has **Clear saved preferences**.
 
 ## Privacy and security defaults
 
 - **Fonts:** self-hosted (`@fontsource/*`). The site makes no third-party requests.
-- **Tracking:** no cookies, analytics or tracking. `public/privacy.html` is the privacy notice; fill in the `[PLACEHOLDERS]`.
+- **Tracking:** the app itself sets no cookies and does no tracking. Hosting on Lovable adds platform analytics (`~flock.js`, `__l5e/events.js`, `session-id` cookie); `public/privacy.html` describes them. Fill in its `[PLACEHOLDERS]`, and either switch the analytics off in Lovable or add consent.
 - **CSP:** production builds carry a CSP `<meta>` tag (see `vite.config.ts`). Hosts that allow response headers should also send it as a header, with `frame-ancestors 'none'`.
 - **Fallback and accessibility:** a list view mirrors the 3D map for keyboard and screen-reader users, and opens automatically when the browser has WebGL turned off.
 - **Reduced motion:** turned on in the OS, it disables camera animation, link particles and auto-rotate.
