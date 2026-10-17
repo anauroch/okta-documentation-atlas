@@ -30,7 +30,7 @@
   <p class="meta">Okta Docs Atlas · last updated [YYYY-MM-DD]</p>
 
   <div class="box">
-    <strong>In short:</strong> the site has no accounts, forms, tracking or advertising. Your browser stores a few display preferences locally. The hosting provider briefly logs technical request data to keep the service running and secure.
+    <strong>In short:</strong> the application has no accounts, forms or advertising, and its own code does no tracking. Your browser stores a few display preferences locally. The hosting provider logs technical request data, and depending on where the site is hosted it may add its own analytics (see below).
   </div>
 
   <h2>Who is responsible</h2>
@@ -47,17 +47,30 @@
         <td>[N] days, then deleted</td>
       </tr>
       <tr>
-        <td>Display preferences in your browser's local storage: <code>oda-read</code> (release entries you marked read) and <code>oda-win</code> (the "new" window you chose)</td>
+        <td>Display preferences in your browser's local storage: <code>oda-read</code> (release entries you marked read), <code>oda-win</code> (the "new" window you chose) and <code>oda-seen</code> (the date of your last visit, for the "Since last visit" filter)</td>
         <td>Remembering choices you make on the page</td>
         <td>Stored at your request and strictly necessary for that function (exempt from consent under ePrivacy Art. 5(3))</td>
         <td>Until you clear them with <em>Clear saved preferences</em> on the map page or in your browser. They never leave your device.</td>
       </tr>
     </tbody>
   </table></div>
-  <p>The site sets no cookies and uses no analytics, fingerprinting or third-party fonts or scripts. [If hosted on a platform that injects analytics or cookies, list them here and obtain consent before they load.]</p>
+  <p>The application's own code sets no cookies and loads no third-party fonts or scripts.</p>
+
+  <h2>Hosting platform analytics</h2>
+  <p>When the site is served from <strong>okta-docs-atlas.lovable.app</strong>, the hosting platform (Lovable) adds the following. They are not part of the application and are controlled by the platform's settings:</p>
+  <div class="wrap"><table>
+    <thead><tr><th>Item</th><th>What it does</th><th>Retention</th></tr></thead>
+    <tbody>
+      <tr><td>Cookie <code>session-id</code> and script <code>~flock.js</code></td><td>Page-view analytics: page path, referrer, browser user agent, language and an approximate country derived from your time zone.</td><td>Cookie expires after 30 minutes; analytics retention per the platform [LOVABLE RETENTION]</td></tr>
+      <tr><td>Script <code>__l5e/events.js</code></td><td>Interaction analytics: clicks, focus changes, page navigation and JavaScript errors. The script can also record sessions (form inputs masked) if the platform enables it.</td><td>Per the platform [LOVABLE RETENTION]</td></tr>
+      <tr><td>Cookie <code>__dpl</code></td><td>Keeps your browser on one deployment version of the site.</td><td>24 hours</td></tr>
+    </tbody>
+  </table></div>
+  <p>[CONSENT: analytics cookies and interaction tracking are not strictly necessary and need your prior consent under the ePrivacy rules (in Finland, section 205 of the Act on Electronic Communications Services). Describe here how consent is collected, or state that these features are switched off.]</p>
+  <p>When the site is self-hosted (for example behind Cloudflare), none of the items in this section apply.</p>
 
   <h2>Recipients and transfers</h2>
-  <p>[HOSTING PROVIDER, e.g. Cloudflare, Inc.] processes the log data above as a processor under a data processing agreement (Art. 28 GDPR). [If data may be processed outside the EEA: the transfer mechanism, e.g. the EU-US Data Privacy Framework or Standard Contractual Clauses (Art. 44-46).]</p>
+  <p>[HOSTING PROVIDER, e.g. Lovable or Cloudflare, Inc.] processes the log and analytics data above as a processor under a data processing agreement (Art. 28 GDPR). [If data may be processed outside the EEA: the transfer mechanism, e.g. the EU-US Data Privacy Framework or Standard Contractual Clauses (Art. 44-46).]</p>
   <p>Links to help.okta.com and other sites take you to third-party services with their own privacy policies. This site is not affiliated with or endorsed by Okta, Inc.</p>
 
   <h2>Your rights</h2>
