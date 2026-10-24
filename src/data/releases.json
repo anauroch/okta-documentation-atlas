@@ -1,6 +1,19 @@
 {
-  "snapshotDate": "2026-10-17",
+  "snapshotDate": "2026-10-24",
   "releases": [
+    {
+      "id": "r-oie-1102",
+      "prod": "oie",
+      "parent": "rn-oie-prod",
+      "ver": "2026.44.0",
+      "chan": "Production",
+      "date": "2026-11-02",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
     {
       "id": "r-oie-1028",
       "prod": "oie",
@@ -15,16 +28,69 @@
       ]
     },
     {
+      "id": "r-oag-1023",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.44.0",
+      "chan": "GA",
+      "date": "2026-10-23",
+      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
+      "items": [
+        "Security enhancements"
+      ]
+    },
+    {
+      "id": "r-wf-1020",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.42.0",
+      "chan": "Production",
+      "date": "2026-10-20",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "items": [
+        "Internal improvements and fixes"
+      ]
+    },
+    {
       "id": "r-oie-1019",
       "prod": "oie",
       "parent": "rn-oie-prod",
       "ver": "2026.42.1",
       "chan": "Production",
       "date": "2026-10-19",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/production.htm",
       "items": [
-        "Scheduled. Dates are subject to change."
+        "Improved MCP server registration experience",
+        "Provisioning for Sumo Logic and Cloudflare",
+        "Removal of Cross App Access configuration using Managed Connection (reconfigure existing connections)",
+        "EA: mTLS client authentication for OIDC apps, Authenticator enrollment sets, Device Visibility for macOS: Device Bound SSO sessions"
+      ]
+    },
+    {
+      "id": "r-oce-1019",
+      "prod": "oce",
+      "parent": "rn-oce-prod",
+      "ver": "2026.42.1",
+      "chan": "Production",
+      "date": "2026-10-19",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/production.htm",
+      "items": [
+        "Provisioning for Sumo Logic and Cloudflare",
+        "EA: mTLS client authentication for OIDC apps",
+        "2 fixes"
+      ]
+    },
+    {
+      "id": "r-opa-1019",
+      "prod": "oie",
+      "parent": "rn-opa-plat",
+      "ver": "OPA 2026.44.0",
+      "chan": "Preview",
+      "date": "2026-10-19",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/privileged-access/opa-release-notes-platform.htm",
+      "items": [
+        "Okta Privileged Access automated app provisioning (no manual OIN app or SCIM setup)",
+        "Credential version history for databases"
       ]
     },
     {
@@ -37,6 +103,18 @@
       "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/privileged-access/opa-release-notes-platform.htm",
       "items": [
         "Service account names for SaaS and Universal Directory accounts can be up to 100 characters (was 50)"
+      ]
+    },
+    {
+      "id": "r-oag-1015",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.10.2",
+      "chan": "GA",
+      "date": "2026-10-15",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-10-2.htm",
+      "items": [
+        "Internal improvements and fixes"
       ]
     },
     {
@@ -196,6 +274,20 @@
       ]
     },
     {
+      "id": "r-oag-0929",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.9.2",
+      "chan": "GA",
+      "date": "2026-09-29",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-9-2.htm",
+      "items": [
+        "Standard DNS failure page for empty (NODATA) responses",
+        "DNS logging enhancements",
+        "Support for the AWS Systems Manager agent"
+      ]
+    },
+    {
       "id": "r-oie-0928",
       "prod": "oie",
       "parent": "rn-oie-arch",
@@ -331,6 +423,19 @@
       ]
     },
     {
+      "id": "r-oag-0908",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.9.1",
+      "chan": "GA",
+      "date": "2026-09-08",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-9-1.htm",
+      "items": [
+        "access_by_lua_file directive now requires a feature flag (security fix, OKTA-1278334)",
+        "Upgrade no longer applies pre-existing cloud user data (OKTA-1258051)"
+      ]
+    },
+    {
       "id": "r-wf-0901",
       "prod": "wf",
       "parent": "rn-wf-prod",
@@ -358,6 +463,20 @@
       ]
     },
     {
+      "id": "r-oag-0805",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.8.0",
+      "chan": "GA",
+      "date": "2026-08-06",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-8-0.htm",
+      "items": [
+        "Third-party library security update (OKTA-1126509)",
+        "SNMPv3 user deletion leaves password entry (fixed)",
+        "Upgrade note: 2026.4.0 or earlier installs okta-release-2026.5.1 first"
+      ]
+    },
+    {
       "id": "r-ispm-0805",
       "prod": "ispm",
       "parent": "rn-ispm",
@@ -368,20 +487,6 @@
       "items": [
         "Advanced inventory filters (Limited EA)",
         "DORA, NIS2, CAF and TISAX on the Controls page"
-      ]
-    },
-    {
-      "id": "r-oag-0805",
-      "prod": "oag",
-      "parent": "rn-oag",
-      "ver": "2026.08.0",
-      "chan": "GA",
-      "date": "2026-08-05",
-      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
-      "items": [
-        "Third-party library security update (OKTA-1126509)",
-        "SNMPv3 user deletion leaves password entry (fixed)",
-        "Upgrade note: 2026.4.0 or earlier installs okta-release-2026.5.1 first"
       ]
     },
     {
@@ -401,10 +506,10 @@
       "id": "r-oag-0617",
       "prod": "oag",
       "parent": "rn-oag",
-      "ver": "2026.06.0",
+      "ver": "2026.6.0",
       "chan": "GA",
       "date": "2026-06-17",
-      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-6-0.htm",
       "items": [
         "Security enhancements and documentation updates"
       ]
