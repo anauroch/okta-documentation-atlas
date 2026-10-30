@@ -1,6 +1,19 @@
 {
-  "snapshotDate": "2026-10-24",
+  "snapshotDate": "2026-10-30",
   "releases": [
+    {
+      "id": "r-oie-1104",
+      "prod": "oie",
+      "parent": "rn-oie-prev",
+      "ver": "2026.45.1",
+      "chan": "Preview",
+      "date": "2026-11-04",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
     {
       "id": "r-oie-1102",
       "prod": "oie",
@@ -21,10 +34,78 @@
       "ver": "2026.44.0",
       "chan": "Preview",
       "date": "2026-10-28",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
       "items": [
-        "Scheduled. Dates are subject to change."
+        "Cross App Access for MCP servers; MCP servers as OAuth clients to downstream resources",
+        "XAA token analytics report",
+        "Import AI agents from UiPath, Relevance AI and Boomi",
+        "HIGH_RISK_PROXIES category for Enhanced Dynamic Network Zones",
+        "Self-service registration policy for ITP, OIN Community Integrations, Low-Code Sign In Customization",
+        "Desktop MFA Factor Discovery for Windows",
+        "Access tokens default to a single aud claim (orgs with multiple audiences enabled)",
+        "EA: Incremental imports for Office 365, Okta Verify Device Posture Sensor Mode, passkey groups matched on AAGUID alone",
+        "20 fixes"
+      ]
+    },
+    {
+      "id": "r-oce-1028",
+      "prod": "oce",
+      "parent": "rn-oce-prev",
+      "ver": "2026.44.0",
+      "chan": "Preview",
+      "date": "2026-10-28",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "items": [
+        "HIGH_RISK_PROXIES category for Enhanced Dynamic Network Zones",
+        "Incomplete app assignment tasks purged after six months",
+        "Okta On-Prem MFA agent 1.8.8",
+        "OIN Community Integrations",
+        "EA: Incremental imports for Office 365, multiple entitlements for the On-prem Connector for Generic Databases",
+        "5 fixes"
+      ]
+    },
+    {
+      "id": "r-iga-1028",
+      "prod": "oie",
+      "parent": "rn-oie-iga",
+      "ver": "IGA 2026.44.0",
+      "chan": "Preview",
+      "date": "2026-10-28",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/iga/iga-release-notes.htm",
+      "items": [
+        "Certify resource collections in resource and identity campaigns: GA in Preview",
+        "Unified requester experience (dashboard, Slack, Teams): GA in Preview",
+        "Stage certification campaigns before launch: GA in Preview",
+        "Convert users from custom to policy without access changes: GA in Production",
+        "Campaign notifications frequency, Access Request email notification settings",
+        "EA: Separation of duties for groups"
+      ]
+    },
+    {
+      "id": "r-wf-1028",
+      "prod": "wf",
+      "parent": "rn-wf-prev",
+      "ver": "2026.44.0",
+      "chan": "Preview",
+      "date": "2026-10-28",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
+      "items": [
+        "RSS feeds for Preview and Production release notes",
+        "PKCE support for OAuth 2.0 authorization code in Integration Builder",
+        "1 fix"
+      ]
+    },
+    {
+      "id": "r-oag-1028",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.44.1",
+      "chan": "GA",
+      "date": "2026-10-28",
+      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
+      "items": [
+        "Fix: intermittent HTTP 503 ACTIVE_DNS_FAILURE in 2026.9.2 to 2026.44.0 for backends without an IPv6 (AAAA) record",
+        "APP_CONFIG logging for unreadable app config files; upstream DNS timeouts logged as SERVFAIL"
       ]
     },
     {
@@ -34,7 +115,7 @@
       "ver": "2026.44.0",
       "chan": "GA",
       "date": "2026-10-23",
-      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-44-0.htm",
       "items": [
         "Security enhancements"
       ]
@@ -46,7 +127,7 @@
       "ver": "2026.42.0",
       "chan": "Production",
       "date": "2026-10-20",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-42-0.htm",
       "items": [
         "Internal improvements and fixes"
       ]
@@ -58,7 +139,7 @@
       "ver": "2026.42.1",
       "chan": "Production",
       "date": "2026-10-19",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/production.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-42-1.htm",
       "items": [
         "Improved MCP server registration experience",
         "Provisioning for Sumo Logic and Cloudflare",
@@ -73,7 +154,7 @@
       "ver": "2026.42.1",
       "chan": "Production",
       "date": "2026-10-19",
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/production.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-42-1.htm",
       "items": [
         "Provisioning for Sumo Logic and Cloudflare",
         "EA: mTLS client authentication for OIDC apps",
@@ -124,7 +205,7 @@
       "ver": "2026.42.1",
       "chan": "Preview",
       "date": "2026-10-14",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-42-1.htm",
       "items": [
         "Improved MCP server registration experience",
         "Provisioning for Sumo Logic and Cloudflare",
@@ -155,7 +236,7 @@
       "ver": "2026.42.1",
       "chan": "Preview",
       "date": "2026-10-14",
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-42-1.htm",
       "items": [
         "Provisioning for Sumo Logic and Cloudflare",
         "Gemini Enterprise Agent Platform import integration",
@@ -169,7 +250,7 @@
       "ver": "2026.41.0",
       "chan": "Production",
       "date": "2026-10-13",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-41-0.htm",
       "items": [
         "Workflows version history",
         "Folder pinning",
@@ -185,7 +266,7 @@
       "ver": "2026.41.0",
       "chan": "Production",
       "date": "2026-10-12",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/production.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-41-0.htm",
       "items": [
         "Version numbers now use year.week: 2026.10.0 became 2026.41.0",
         "Passkey (FIDO2 WebAuthn) authenticator enabled by default",
@@ -220,7 +301,7 @@
       "ver": "2026.41.0",
       "chan": "Production",
       "date": "2026-10-12",
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/production.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-41-0.htm",
       "items": [
         "Version numbers now use year.week: 2026.10.0 became 2026.41.0",
         "Radius Agent version 2.28",
@@ -244,6 +325,18 @@
       ]
     },
     {
+      "id": "r-aer-041",
+      "prod": "aerial",
+      "parent": "rn-aer",
+      "ver": "2026.41.0",
+      "chan": "GA",
+      "date": "2026-10-07",
+      "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
+      "items": [
+        "Protected Actions email notifications show the cross-org admin's full name and username"
+      ]
+    },
+    {
       "id": "r-oie-1005",
       "prod": "oie",
       "parent": "rn-oie-arch",
@@ -258,19 +351,6 @@
         "Access Requests decision justification",
         "Sign-In Widget, version 7.49.1",
         "Provisioning for Kong AI"
-      ]
-    },
-    {
-      "id": "r-aer-041",
-      "prod": "aerial",
-      "parent": "rn-aer",
-      "ver": "2026.41.0",
-      "chan": "GA",
-      "date": "2026-10-01",
-      "approx": true,
-      "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
-      "items": [
-        "Protected Actions email notifications show the cross-org admin's full name and username"
       ]
     },
     {
@@ -409,20 +489,6 @@
       ]
     },
     {
-      "id": "r-wf-0915",
-      "prod": "wf",
-      "parent": "rn-wf-prod",
-      "ver": "2026.09.0",
-      "chan": "Production",
-      "date": "2026-09-15",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
-      "items": [
-        "Integration Builder GA in Production",
-        "Zscaler connector (13 action cards)",
-        "Data-URI images no longer render in Notes cards"
-      ]
-    },
-    {
       "id": "r-oag-0908",
       "prod": "oag",
       "parent": "rn-oag",
@@ -436,16 +502,17 @@
       ]
     },
     {
-      "id": "r-wf-0901",
+      "id": "r-wf-0915",
       "prod": "wf",
       "parent": "rn-wf-prod",
-      "ver": "2026.08.3",
+      "ver": "2026.09.0",
       "chan": "Production",
-      "date": "2026-09-01",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "date": "2026-09-02",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-09-0.htm",
       "items": [
-        "Integration Builder fixes (OIN Wizard action flows, invocation URLs)",
-        "Folder Manager role dropdown fix"
+        "Integration Builder GA in Production",
+        "Zscaler connector (13 action cards)",
+        "Data-URI images no longer render in Notes cards"
       ]
     },
     {
@@ -460,6 +527,31 @@
         "AI agent discovery for all ISPM customers",
         "EA: endpoint shadow AI agents and MCP servers via CrowdStrike Falcon",
         "Copilot Studio agent discovery GA"
+      ]
+    },
+    {
+      "id": "r-wf-0901",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.08.3",
+      "chan": "Production",
+      "date": "2026-08-26",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-08-3.htm",
+      "items": [
+        "Integration Builder fixes (OIN Wizard action flows, invocation URLs)",
+        "Folder Manager role dropdown fix"
+      ]
+    },
+    {
+      "id": "r-mcp-ea",
+      "prod": "mcp",
+      "parent": "rn-mcp",
+      "ver": "Early Access",
+      "chan": "EA",
+      "date": "2026-08-19",
+      "url": "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm",
+      "items": [
+        "Okta Managed MCP Server available in Early Access (Core Identity and Identity Governance SKUs)"
       ]
     },
     {
@@ -551,19 +643,6 @@
       "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
       "items": [
         "Org groups and Aerial member role (EA)"
-      ]
-    },
-    {
-      "id": "r-mcp-ea",
-      "prod": "mcp",
-      "parent": "rn-mcp",
-      "ver": "Early Access",
-      "chan": "EA",
-      "date": null,
-      "url": "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm",
-      "items": [
-        "Okta Managed MCP Server available in Early Access (Core Identity and Identity Governance SKUs)",
-        "No dated entries on the release notes page yet"
       ]
     }
   ]
