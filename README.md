@@ -31,12 +31,15 @@ src/
   data/
     types.ts        Node, link and release types
     docsTree.ts     The documentation tree: products, sections, pages, release-notes pages
+    devTree.ts      The developer.okta.com tree (second system), from that site's sidebar navigation
+    systems.ts      The two systems (help.okta.com, developer.okta.com) and node lookup across both
     releases.ts     Release radar entries + SNAPSHOT_DATE   ← edit this to refresh
   lib/
     releases.ts     Date logic (new / upcoming / relative text) and per-browser storage
   components/
     AtlasGraph.tsx  3D graph, HTML label layer, dot popovers, zoom controls, legend
     spaceFx.ts      Optional space scenery and detailed nodes (the header's Effects switch)
+    jumpGate.ts     The jump gate that links the two systems in the 3D map
     ReleaseRadar.tsx
     DetailCard.tsx
   pages/Index.tsx   Page layout and shared state
