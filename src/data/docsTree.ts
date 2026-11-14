@@ -1,5 +1,5 @@
-import type { AtlasLink, AtlasNode, NodeKind, Product, ProductKey } from "./types";
-import { RELEASES } from "./releases";
+import type { Atlas, AtlasLink, AtlasNode, NodeKind, Product, ProductKey } from "./types";
+import { RELEASES, SNAPSHOT_DATE } from "./releases";
 
 /**
  * Documentation tree for help.okta.com (snapshot 24 Sep 2026).
@@ -283,3 +283,11 @@ export function pathOf(n: AtlasNode): string {
   while (c) { a.unshift(c.label); c = c.parent ? byId[c.parent] : null; }
   return a.join(" › ");
 }
+
+export const HELP_ATLAS: Atlas = {
+  id: "help", name: "Product docs", host: "help.okta.com", root: "root", snapshot: SNAPSHOT_DATE,
+  searchHint: "Search pages, e.g. MCP, realms, DBSSO",
+  nodes, links, byId, products: PRODUCTS,
+  legend: Object.keys(PRODUCTS).filter((k) => k !== "root" && k !== "rn"),
+  childrenOf, pathOf,
+};
