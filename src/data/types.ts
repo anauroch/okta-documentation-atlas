@@ -1,5 +1,5 @@
-export type ProductKey =
-  | "root" | "oie" | "oce" | "wf" | "oag" | "ispm" | "mcp" | "aerial" | "res" | "rn";
+/** legend group key; each system (help.okta.com, developer.okta.com) has its own set */
+export type ProductKey = string;
 
 export type NodeKind = "doc" | "rnhub" | "rnpage" | "release";
 
@@ -34,6 +34,8 @@ export interface AtlasNode {
   parent: string | null;
   level: number;
   rel?: Release;
+  /** always labelled and drawn larger, like a hub (developer guide topics) */
+  pin?: boolean;
   /* runtime fields written by the force layout / label layer */
   x?: number; y?: number; z?: number;
   _near?: boolean;
@@ -43,4 +45,26 @@ export interface AtlasLink {
   source: string | AtlasNode;
   target: string | AtlasNode;
   kind: NodeKind;
+}
+
+export type SystemId = "help" | "dev";
+
+/** One documentation site drawn as its own "solar system". */
+export interface Atlas {
+  id: SystemId;
+  /** menu label */
+  name: string;
+  host: string;
+  /** id of the centre node */
+  root: string;
+  snapshot: string;
+  searchHint: string;
+  nodes: AtlasNode[];
+  links: AtlasLink[];
+  byId: Record<string, AtlasNode>;
+  products: Record<string, Product>;
+  /** product keys shown as legend chips, in order */
+  legend: string[];
+  childrenOf: (id: string) => AtlasNode[];
+  pathOf: (n: AtlasNode) => string;
 }
