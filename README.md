@@ -36,6 +36,7 @@ src/
     releases.ts     Date logic (new / upcoming / relative text) and per-browser storage
   components/
     AtlasGraph.tsx  3D graph, HTML label layer, dot popovers, zoom controls, legend
+    spaceFx.ts      Optional space scenery and detailed nodes (the header's Effects switch)
     ReleaseRadar.tsx
     DetailCard.tsx
   pages/Index.tsx   Page layout and shared state
@@ -57,7 +58,7 @@ This exists because an AI editing agent once replaced the whole list with plausi
 2. Check each new or changed entry against its `url`.
 3. Run `npm run data:lock`, then commit `releases.json` and `releases.lock` together.
 
-A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read state, the window and the last-visit date are stored per browser in `localStorage` (`oda-read`, `oda-win`, `oda-seen`). Values are validated on load, and the footer has **Clear saved preferences**.
+A release counts as **New** when it shipped within the window the viewer picks (7, 14, 30 or 90 days). Read state, the window, the last-visit date and the effects switch are stored per browser in `localStorage` (`oda-read`, `oda-win`, `oda-seen`, `oda-fx`). Values are validated on load, and the footer has **Clear saved preferences**.
 
 ## Privacy and security defaults
 
