@@ -3,6 +3,7 @@ import ForceGraph3D from "3d-force-graph";
 import { BY_ID, LINKS, NODES, PRODUCTS, pathOf } from "@/data/docsTree";
 import type { AtlasLink, AtlasNode, ProductKey } from "@/data/types";
 import { isHot, isNew, isUpcoming, weekOf } from "@/lib/releases";
+import { animateNode, buildNode, createSpace, styleNode, type NodeLook, type SpaceFx } from "@/components/spaceFx";
 
 export type Mode = "all" | "docs" | "rn";
 
@@ -15,6 +16,8 @@ export interface AtlasGraphProps {
   selectedId: string;
   onSelect: (id: string) => void;
   onToggleProduct: (k: ProductKey) => void;
+  /** space background and detailed nodes; off renders the plain map */
+  fx: boolean;
 }
 export interface AtlasGraphHandle {
   flyTo: (id: string) => void;
@@ -27,7 +30,6 @@ const NEAR = 170; // camera distance under which section/page labels appear
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Graph = any;
 
-const css = (n: string) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const nodeOf = (x: string | AtlasNode) => (typeof x === "string" ? BY_ID[x] : x);
 const reducedMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -38,6 +40,9 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   const popEl = useRef<HTMLDivElement>(null);
   const zoomLvl = useRef<HTMLSpanElement>(null);
   const graph = useRef<Graph>(null);
+  const space = useRef<SpaceFx | null>(null);
+  // tokens are read from the stage, which carries its own dark palette while effects are on
+  const css = (n: string) => getComputedStyle(stageRef.current ?? document.documentElement).getPropertyValue(n).trim();
   const propsRef = useRef(props);
   propsRef.current = props;
 
@@ -123,8 +128,11 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     });
   };
 
+  const lookOf = (n: AtlasNode): NodeLook => ({ color: nodeColor(n), radius: Math.cbrt(nodeSize(n)) * 4, hub: n.level <= 1, root: n.id === "root", hot: hot(n) });
   const refreshGraph = () => {
     const G = graph.current; if (!G) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (propsRef.current.fx) NODES.forEach((n) => { const o = (n as any).__threeObj; if (o?.userData?.fx) styleNode(o, lookOf(n)); });
     G.nodeColor(G.nodeColor()).nodeVal(G.nodeVal()).linkColor(G.linkColor()).linkWidth(G.linkWidth())
       .linkDirectionalParticles(G.linkDirectionalParticles()).nodeVisibility(G.nodeVisibility()).linkVisibility(G.linkVisibility());
   };
@@ -189,8 +197,15 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
 
     let raf = 0;
     let lastSig = "";
+    let lastT = performance.now();
     const tick = () => {
       raf = requestAnimationFrame(tick);
+      const now = performance.now(), dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
+      if (propsRef.current.fx && space.current) {
+        space.current.update(now / 1000, dt, G.camera());
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (!reducedMotion()) NODES.forEach((n) => { const o = (n as any).__threeObj; if (o?.userData?.fx) animateNode(o, now / 1000, dt); });
+      }
       const cam = G.camera().position; const box = labelsEl.current!;
       const tg = G.controls().target || { x: 0, y: 0, z: 0 };
       // Only reposition ~250 labels when the view actually changed: saves CPU/battery when idle
@@ -228,6 +243,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     rebuildLabels();
     return () => {
       cancelAnimationFrame(raf); ro.disconnect(); mq.removeEventListener("change", retheme); mo.disconnect();
+      space.current?.dispose(); space.current = null;
       G._destructor?.(); graph.current = null;
       Object.values(lblEls.current).forEach((d) => d.remove()); lblEls.current = {};
     };
@@ -244,10 +260,25 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     c.autoRotate = rotating; c.autoRotateSpeed = 0.8;
   }, [rotating]);
 
+  /* ---------- effects on/off: add or remove the space scenery and swap the node objects ---------- */
+  useEffect(() => {
+    const G = graph.current; if (!G) return;
+    if (props.fx) {
+      if (!space.current) space.current = createSpace(reducedMotion());
+      G.scene().add(space.current.group);
+      G.nodeThreeObject((n: AtlasNode) => buildNode(lookOf(n)));
+    } else {
+      if (space.current) G.scene().remove(space.current.group);
+      G.nodeThreeObject(() => undefined); // back to the built-in spheres
+    }
+    refreshGraph(); dirty.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.fx]);
+
   const pop = popId ? BY_ID[popId] : null;
 
   return (
-    <section ref={stageRef} className="stage" aria-label="3D documentation map">
+    <section ref={stageRef} className={"stage" + (props.fx ? " fx" : "")} aria-label="3D documentation map">
       <div ref={graphEl} className="absolute inset-0" />
       <div ref={labelsEl} className="labels" />
       <div className="hint">Drag to orbit · scroll to zoom · click any dot to open its page</div>
