@@ -44,6 +44,9 @@ export default function Index() {
   const [read, setReadState] = useState<Set<string>>(() => new Set(store.getIds("oda-read", RELEASE_IDS)));
   const [selectedId, setSelectedId] = useState(() => hashId() ?? "root");
   const [cleared, setCleared] = useState(false);
+  // space background and detailed nodes: on by default, off restores the plain map
+  const [fx, setFxState] = useState<boolean>(() => store.get<unknown>("oda-fx", true) !== false);
+  const setFx = (on: boolean) => { setFxState(on); store.set("oda-fx", on); };
 
   const setWinDays = (n: number) => { setWinDaysState(n); store.set("oda-win", n); };
   const setRead = (s: Set<string>) => { setReadState(s); store.set("oda-read", [...s]); };
@@ -99,6 +102,7 @@ export default function Index() {
     store.clearAll();
     setReadState(new Set());
     setWinDaysState(14);
+    setFxState(true);
     setCleared(true);
     setTimeout(() => setCleared(false), 2500);
   };
@@ -131,6 +135,13 @@ export default function Index() {
             <input id="q" type="search" value={queryInput} onChange={(e) => setQueryInput(e.target.value)}
               placeholder="Search pages, e.g. MCP, realms, DBSSO" aria-label="Search the map" />
           </div>
+          {view === "map" && (
+            <label className="switch" title="Space background, animation and detailed nodes. Off shows the plain map.">
+              <input type="checkbox" role="switch" checked={fx} onChange={(e) => setFx(e.target.checked)} />
+              <span className="track" aria-hidden="true" />
+              Effects
+            </label>
+          )}
           {view === "map" && <button className="btn" onClick={() => graph.current?.fit()}>Reset view</button>}
         </div>
       </header>
@@ -139,7 +150,7 @@ export default function Index() {
         {view === "map" ? (
           <Suspense fallback={<section className="stage" aria-busy="true"><p className="loading">Loading 3D map…</p></section>}>
             <AtlasGraph ref={graph} mode={mode} hidden={hidden} query={query} winDays={winDays} read={read}
-              selectedId={selectedId} onSelect={(id) => select(id)} onToggleProduct={toggleProduct} />
+              selectedId={selectedId} onSelect={(id) => select(id)} onToggleProduct={toggleProduct} fx={fx} />
           </Suspense>
         ) : (
           <ListView hidden={hidden} query={query} winDays={winDays} read={read} selectedId={selectedId}
