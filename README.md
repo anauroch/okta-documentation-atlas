@@ -1,8 +1,47 @@
 # Okta Docs Atlas
 
-An interactive 3D map of [help.okta.com](https://help.okta.com/en-us/content/index.htm), showing the product doc sets, their sections and pages, and the release notes. A **Release radar** flags new and upcoming releases across Identity Engine, IGA, Classic Engine, Workflows, ISPM, Access Gateway, Managed MCP Server and Aerial.
+An unofficial, interactive 3D map of Okta's documentation. It holds two systems, linked by a jump gate in the map and a switch in the header:
 
-Stack: Vite 5 · React 18 · TypeScript · Tailwind CSS 3 · [3d-force-graph](https://github.com/vasturiano/3d-force-graph). No backend, no secrets, no environment variables. Published through Lovable: https://okta-docs-atlas.lovable.app/
+- **Product docs** ([help.okta.com](https://help.okta.com/en-us/content/index.htm)): the product doc sets, their sections and pages, and the release notes. A **Release radar** flags new and upcoming releases.
+- **Developer docs** ([developer.okta.com](https://developer.okta.com/)): guides, concepts, journeys, API docs, references, SDKs and release notes.
+
+Live: https://okta-docs-atlas.lovable.app/
+
+Not affiliated with Okta. Every node links to the original page; the map holds titles and links, not the documentation text.
+
+## What's in the map (snapshot 14 Nov 2026)
+
+| | Product docs | Developer docs |
+|---|---|---|
+| Source | help.okta.com | developer.okta.com sidebar navigation |
+| Nodes | 276 (216 pages, 60 release entries) | 385 pages |
+| Depth | Product, section, page | Two to three levels below each section |
+| Tree last checked | 17 Oct 2026 (link check) | 14 Nov 2026 (first import) |
+| Release data | 14 Nov 2026, 60 entries | Links to the release-notes pages only |
+
+**Product docs**, pages per doc set: Identity Engine 52, Workflows 28, ISPM 28, Managed MCP Server 24, Access Gateway 22, Classic Engine 10, Aerial 10, Resources 6, plus 26 release-notes pages.
+
+**Developer docs**, pages per section: Guides 263 (19 topics, grouped in the legend as sign-in and auth, AI and integrations, org and users, upgrade and deploy), Concepts 48, References 20, Release notes 15, Journeys 13, API docs 9, SDKs 9. The API reference itself isn't mapped page by page; the map links to its entry points.
+
+**Release radar**, latest entry per line at the snapshot:
+
+| Line | Latest | Date |
+|---|---|---|
+| Identity Engine | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 9 Nov |
+| Classic Engine | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 9 Nov |
+| Identity Governance | 2026.46.0 | 11 Nov |
+| Privileged Access | 2026.46.0 Preview | 12 Nov |
+| Workflows | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 10 Nov |
+| Managed MCP Server | 2026.45.1 (EA) | 11 Nov |
+| ISPM | Announcement | 4 Nov |
+| Access Gateway | 2026.45.0 | 3 Nov |
+| Aerial | 2026.41.0 | 7 Oct |
+
+Scheduled at the snapshot: Identity Engine 2026.46.0 Production (16 Nov) and 2026.47.1 Preview (18 Nov). The radar covers 1 Mar 2026 onward and is refreshed about twice a month; each refresh is reviewed by a person before it is committed. Notes on sources and gaps are under [Data notes](#data-notes-snapshot-14-nov-2026).
+
+## Stack
+
+Vite 5 · React 18 · TypeScript · Tailwind CSS 3 · [3d-force-graph](https://github.com/vasturiano/3d-force-graph). No backend, no secrets, no environment variables. The live site is published through Lovable from Lovable's own copy of the project, so it can differ from this repo in small ways.
 
 ## Run locally
 
@@ -69,17 +108,30 @@ A release counts as **New** when it shipped within the window the viewer picks (
 - **Tracking:** the app itself sets no cookies and does no tracking. Hosting on Lovable adds platform analytics (`~flock.js`, `__l5e/events.js`, `session-id` cookie); `public/privacy.html` describes them. Fill in its `[PLACEHOLDERS]`, and either switch the analytics off in Lovable or add consent.
 - **CSP:** production builds carry a CSP `<meta>` tag (see `vite.config.ts`). Hosts that allow response headers should also send it as a header, with `frame-ancestors 'none'`.
 - **Fallback and accessibility:** a list view mirrors the 3D map for keyboard and screen-reader users, and opens automatically when the browser has WebGL turned off.
-- **Reduced motion:** turned on in the OS, it disables camera animation, link particles and auto-rotate.
+- **Reduced motion:** turned on in the OS, it disables camera animation, link particles and auto-rotate, holds the space scenery still, and makes the switch between the two systems instant.
 
 ## Adding pages to the map
 
-In `src/data/docsTree.ts`, call `add(id, label, url, product, parentId)` for one page or `many(parentId, product, baseUrl, [[id, label, path], ...])` for a list. Ids must be unique, and a parent must be added before its children. Otherwise the build throws with the offending id.
+**Product docs:** in `src/data/docsTree.ts`, call `add(id, label, url, product, parentId)` for one page or `many(parentId, product, baseUrl, [[id, label, path], ...])` for a list. Ids must be unique, and a parent must be added before its children. Otherwise the build throws with the offending id.
 
-## Data notes (snapshot 17 Oct 2026)
+**Developer docs:** in `src/data/devTree.ts`, each section is a list of rows `[depth, label, path, legendGroup?]` in sidebar order. A row's parent is the nearest row above it with a smaller depth. Ids are derived from the path (`d-<slug>`).
 
-- The map covers the main sections, not every page (Identity Engine and Access Gateway have 500+ pages each). Direct help.okta.com links were checked on 17 Oct 2026; four that returned 404 were fixed or removed. Links through `okta_help.htm?id=…` resolve in the browser and weren't status-checked.
+## Data notes (snapshot 14 Nov 2026)
+
+Product docs:
+
+- The map covers the main sections, not every page (Identity Engine and Access Gateway have 500+ pages each). Direct help.okta.com links were last status-checked on 17 Oct 2026; four that returned 404 were fixed or removed. Links through `okta_help.htm?id=…` resolve in the browser and weren't status-checked.
+- All 36 distinct release-note URLs in the radar were fetched on 14 Nov 2026 and resolve.
 - From October 2026, Okta versions use year.week instead of year.month: 2026.10.0 became 2026.41.0. Weekly updates keep the `.1`, `.2` suffix.
-- The Production and Preview pages show only the latest release. Older entries link to the 2026 archive page, where Okta moves them.
-- Identity Governance notes carry no dates; IGA entries use the date of the matching Identity Engine release. Aerial notes give no dates; Aerial entries show the month only.
+- Okta now publishes per-version pages for Identity Engine, Classic Engine, Workflows and Access Gateway, and per-announcement pages for ISPM. Radar entries link to those, so the links no longer roll over. Okta keeps no Preview notes once a version is superseded, so older Preview entries link to the Production page of the same version.
+- Identity Governance, Privileged Access, Managed MCP Server and Aerial have no version pages. Their entries link to pages that show only the latest release.
+- Production can carry fewer features than the Preview of the same version did (2026.44.0 is an example), so the two entries are listed separately.
+- Identity Governance notes before 2026.46.0 carry no dates; those entries use the date of the matching Identity Engine release. Older Aerial entries show the month only.
 - The Classic Engine 2026.09.0 production date is an estimate.
-- The Managed MCP Server release notes have no dated entries yet.
+
+Developer docs:
+
+- The tree was read from developer.okta.com's own sidebar navigation on 14 Nov 2026. Links were not status-checked one by one.
+- Guides go two levels below each of the 19 topics; deeper pages and per-language variants of a guide are left out, and a guide links to one variant.
+- The four Guides groups in the legend are this project's own grouping, not Okta's.
+- The Release radar covers Product docs only. In the Developer docs system, the release-notes node links to developer.okta.com's own release-notes pages.
