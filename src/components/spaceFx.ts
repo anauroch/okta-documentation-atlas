@@ -1,6 +1,6 @@
 /**
  * Optional "space" visuals for the 3D map: a starfield with slow parallax, a distant planet
- * system, a drifting rock field, a comet, occasional shooting stars, and detailed wireframe
+ * system, asteroid formations, a comet, occasional shooting stars, and detailed wireframe
  * "balloon" nodes. Everything lives in the graph's own three.js scene so it moves with the camera.
  * Turned off, none of this is created and the map renders exactly as before.
  */
@@ -96,25 +96,33 @@ export function createSpace(still: boolean): SpaceFx {
   companion.scale.setScalar(70); companion.position.set(-640, 300, -900);
   system.add(planet, planetWire, ring, companion); planetPivot.add(system); root.add(planetPivot);
 
-  /* ---- rock field: low-poly tumbling rocks drifting as one formation ---- */
-  const rockPivot = new THREE.Group();
-  const field = new THREE.Group(); field.position.set(900, -640, -2400);
+  /* ---- asteroid formations: rocks revolve around each formation's own centre of gravity ---- */
   const rockGeo = new THREE.DodecahedronGeometry(1, 0);
   const rockMats = [0x3a4252, 0x2f3644, 0x475062].map((c) => new THREE.MeshLambertMaterial({ color: c, flatShading: true }));
-  const rocks: { o: Obj; ax: number; ay: number }[] = [];
-  for (let i = 0; i < 18; i++) {
-    const o = noRay(new THREE.Mesh(rockGeo, rockMats[i % 3]));
-    const s = rand(9, 40);
-    o.scale.set(s * rand(0.6, 1.4), s * rand(0.6, 1.3), s * rand(0.6, 1.4));
-    o.position.set(rand(-520, 520), rand(-150, 150), rand(-260, 260));
-    o.rotation.set(rand(0, 6), rand(0, 6), rand(0, 6));
-    rocks.push({ o, ax: rand(-0.12, 0.12), ay: rand(-0.12, 0.12) }); field.add(o);
-  }
-  rockPivot.add(field); root.add(rockPivot);
+  const rocks: { o: Obj; r: number; a: number; w: number; y: number; ax: number; ay: number }[] = [];
+  const placeRock = (k: { o: Obj; r: number; a: number; y: number }) => k.o.position.set(Math.cos(k.a) * k.r, k.y, Math.sin(k.a) * k.r);
+  const formation = (pos: [number, number, number], tilt: [number, number], count: number, rMin: number, rMax: number, core: number, dir: number) => {
+    const disc = new THREE.Group(); disc.position.set(...pos); disc.rotation.set(tilt[0], 0, tilt[1]);
+    // the heavy body the others circle
+    const c = noRay(new THREE.Mesh(rockGeo, rockMats[1]));
+    c.scale.set(core, core * 0.82, core * 0.9); rocks.push({ o: c, r: 0, a: 0, w: 0, y: 0, ax: 0.03, ay: 0.05 }); disc.add(c);
+    for (let i = 0; i < count; i++) {
+      const o = noRay(new THREE.Mesh(rockGeo, rockMats[i % 3]));
+      const sz = rand(7, 30);
+      o.scale.set(sz * rand(0.6, 1.4), sz * rand(0.6, 1.3), sz * rand(0.6, 1.4));
+      o.rotation.set(rand(0, 6), rand(0, 6), rand(0, 6));
+      const r = rand(rMin, rMax);
+      // inner rocks circle faster, like a real orbit: about 40 s per lap at r = 150, minutes further out
+      const k = { o, r, a: rand(0, Math.PI * 2), w: dir * 0.16 * Math.pow(150 / r, 1.5), y: rand(-0.07, 0.07) * r, ax: rand(-0.25, 0.25), ay: rand(-0.25, 0.25) };
+      placeRock(k); rocks.push(k); disc.add(o);
+    }
+    root.add(disc);
+  };
+  formation([900, -640, -2400], [0.5, 0.3], 16, 130, 520, 46, 1);
+  formation([-1350, -760, -3000], [-0.35, -0.6], 11, 110, 400, 34, -1);
 
-  /* ---- comet: bright head with a fading tail of points, on a slow tilted orbit ---- */
-  const cometPivot = new THREE.Group(); cometPivot.rotation.set(0.5, 0, 0.35);
-  const comet = new THREE.Group(); comet.position.set(0, 0, -3900);
+  /* ---- comet: crosses the background on a slow straight pass, tail trailing; a new pass starts when it leaves ---- */
+  const comet = new THREE.Group();
   const head = noRay(new THREE.Sprite(new THREE.SpriteMaterial({ map: dot(), color: 0xd6ecff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
   head.scale.setScalar(120);
   const TAIL = 90, tp = new Float32Array(TAIL * 3), tc = new Float32Array(TAIL * 3);
@@ -126,7 +134,27 @@ export function createSpace(still: boolean): SpaceFx {
   const tailGeo = new THREE.BufferGeometry();
   tailGeo.setAttribute("position", new THREE.BufferAttribute(tp, 3)); tailGeo.setAttribute("color", new THREE.BufferAttribute(tc, 3));
   const tail = noRay(new THREE.Points(tailGeo, new THREE.PointsMaterial({ size: 5, map: dot(), vertexColors: true, transparent: true, depthWrite: false, sizeAttenuation: false, blending: THREE.AdditiveBlending })));
-  comet.add(head, tail); cometPivot.add(comet); root.add(cometPivot);
+  comet.add(head, tail); root.add(comet);
+  const COMET_SPEED = 55, COMET_HALF = 3800; // units per second; half-length of a pass
+  const cDir = new THREE.Vector3(), cOff = new THREE.Vector3(), X = new THREE.Vector3(1, 0, 0);
+  let cS = 0;
+  const placeComet = () => {
+    comet.position.copy(cOff).addScaledVector(cDir, cS);
+    const edge = Math.min(1, (COMET_HALF - Math.abs(cS)) / 500); // fade in and out at the ends of a pass
+    head.material.opacity = edge; tail.material.opacity = edge;
+  };
+  const newPass = (first: boolean) => {
+    if (first) { cDir.set(1, -0.16, 0.12).normalize(); cOff.set(-150, 1080, -3100); cS = -1700; } // starts in view, upper left
+    else {
+      cDir.set(...onSphere(1));
+      // closest approach to the map stays far out, so the comet is always background
+      cOff.set(...onSphere(1)); cOff.addScaledVector(cDir, -cOff.dot(cDir)).normalize().multiplyScalar(rand(2700, 3400));
+      cS = -COMET_HALF;
+    }
+    comet.quaternion.setFromUnitVectors(X, cDir); // the tail lies along local -x
+    placeComet();
+  };
+  newPass(true);
 
   /* ---- shooting stars: a small pool of streaks aimed into the camera's field of view ---- */
   const meteors = Array.from({ length: 3 }, () => {
@@ -157,9 +185,9 @@ export function createSpace(still: boolean): SpaceFx {
     planetPivot.rotation.y += dt * 0.003;
     planet.rotation.y += dt * 0.02; planetWire.rotation.y -= dt * 0.012; ring.rotation.z += dt * 0.006;
     moons.forEach((m) => { const a = t * m.w + m.ph; m.o.position.set(Math.cos(a) * m.r, Math.sin(a) * m.r * Math.sin(m.tilt), Math.sin(a) * m.r * Math.cos(m.tilt)); });
-    rockPivot.rotation.y -= dt * 0.0045;
-    rocks.forEach((r) => { r.o.rotation.x += dt * r.ax; r.o.rotation.y += dt * r.ay; });
-    cometPivot.rotation.y += dt * 0.011;
+    rocks.forEach((k) => { k.o.rotation.x += dt * k.ax; k.o.rotation.y += dt * k.ay; if (k.r) { k.a += dt * k.w; placeRock(k); } });
+    cS += dt * COMET_SPEED;
+    if (cS > COMET_HALF) newPass(false); else placeComet();
 
     nextMeteor -= dt;
     if (nextMeteor <= 0) { spawn(camera); nextMeteor = rand(6, 15); }
