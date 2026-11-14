@@ -1,6 +1,166 @@
 {
-  "snapshotDate": "2026-10-30",
+  "snapshotDate": "2026-11-14",
   "releases": [
+    {
+      "id": "r-oie-1118",
+      "prod": "oie",
+      "parent": "rn-oie-prev",
+      "ver": "2026.47.1",
+      "chan": "Preview",
+      "date": "2026-11-18",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
+    {
+      "id": "r-oie-1116",
+      "prod": "oie",
+      "parent": "rn-oie-prod",
+      "ver": "2026.46.0",
+      "chan": "Production",
+      "date": "2026-11-16",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
+    {
+      "id": "r-oie-1112",
+      "prod": "oie",
+      "parent": "rn-oie-prev",
+      "ver": "2026.46.0",
+      "chan": "Preview",
+      "date": "2026-11-12",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "items": [
+        "Enhanced breached credentials protection for OWI",
+        "Multiple actions in entity risk policy rules",
+        "User email addresses in the Cross App Access Token Analytics report",
+        "Email auto-enroll note for authenticator sets; Salesforce My Domain integration",
+        "Access Request task assignee limit increased; Active Directory agent 3.24.0",
+        "EA: Device Visibility for Windows (Desktop MFA and Device-Bound SSO), Attack protection policy, Admin Console banner for paused imports",
+        "8 fixes"
+      ]
+    },
+    {
+      "id": "r-oce-1112",
+      "prod": "oce",
+      "parent": "rn-oce-prev",
+      "ver": "2026.46.0",
+      "chan": "Preview",
+      "date": "2026-11-12",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "items": [
+        "Access Request task assignee limit increased",
+        "Salesforce My Domain integration",
+        "Active Directory agent 3.24.0",
+        "EA: Admin Console banner for paused imports",
+        "1 fix"
+      ]
+    },
+    {
+      "id": "r-opa-1112",
+      "prod": "oie",
+      "parent": "rn-opa-plat",
+      "ver": "OPA 2026.46.0",
+      "chan": "Preview",
+      "date": "2026-11-12",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/privileged-access/opa-release-notes-platform.htm",
+      "items": [
+        "Active Directory account management (no Support request needed to enable)",
+        "Okta Privileged Access in the first-party App Switcher"
+      ]
+    },
+    {
+      "id": "r-wf-1112",
+      "prod": "wf",
+      "parent": "rn-wf-prev",
+      "ver": "2026.46.0",
+      "chan": "Preview",
+      "date": "2026-11-12",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
+      "items": [
+        "Client token no longer appears in Invoke and Resume URLs (send it in the x-api-client-token header)",
+        "Harmony SASE connector renamed to Check Point SASE",
+        "Fixes"
+      ]
+    },
+    {
+      "id": "r-iga-1111",
+      "prod": "oie",
+      "parent": "rn-oie-iga",
+      "ver": "IGA 2026.46.0",
+      "chan": "Production + Preview",
+      "date": "2026-11-11",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/iga/iga-release-notes.htm",
+      "items": [
+        "Certify resource collections in resource and user campaigns: GA in Production",
+        "Resource collections support groups, push groups and non-EM apps",
+        "More Access Request detail in System Log events, plus a new event",
+        "Access Request task assignee limit increased",
+        "EA: Automatically assign resource collections with collection policies",
+        "3 fixes"
+      ]
+    },
+    {
+      "id": "r-mcp-1111",
+      "prod": "mcp",
+      "parent": "rn-mcp",
+      "ver": "2026.45.1",
+      "chan": "EA",
+      "date": "2026-11-11",
+      "url": "https://help.okta.com/mcp/en-us/content/topics/releasenotes/mcpserver/mcpserver-releasenotes.htm",
+      "items": [
+        "User lifecycle actions: activate, reactivate, suspend, unsuspend, unlock, reset factors",
+        "Group rules: list, get, create, replace, delete, activate, deactivate"
+      ]
+    },
+    {
+      "id": "r-wf-1110",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.45.1",
+      "chan": "Production",
+      "date": "2026-11-10",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "items": [
+        "None security option removed for new API Endpoint flows (existing flows unchanged)",
+        "4 fixes"
+      ]
+    },
+    {
+      "id": "r-oie-1109",
+      "prod": "oie",
+      "parent": "rn-oie-prod",
+      "ver": "2026.45.1",
+      "chan": "Production",
+      "date": "2026-11-09",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-45-1.htm",
+      "items": [
+        "Versioning for imported Salesforce AI agents",
+        "Import staged AI agents",
+        "Device assurance OS version update",
+        "Radius Agent 2.29, Okta Provisioning Agent 3.3.3",
+        "12 fixes"
+      ]
+    },
+    {
+      "id": "r-oce-1109",
+      "prod": "oce",
+      "parent": "rn-oce-prod",
+      "ver": "2026.45.1",
+      "chan": "Production",
+      "date": "2026-11-09",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-45-1.htm",
+      "items": [
+        "Radius Agent 2.29",
+        "Okta Provisioning Agent 3.3.3",
+        "3 fixes"
+      ]
+    },
     {
       "id": "r-oie-1104",
       "prod": "oie",
@@ -8,10 +168,47 @@
       "ver": "2026.45.1",
       "chan": "Preview",
       "date": "2026-11-04",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-45-1.htm",
       "items": [
-        "Scheduled. Dates are subject to change."
+        "Preview deployment of 2026.45.1; Okta doesn't keep separate Preview notes once superseded, so this links to the 2026.45.1 notes"
+      ]
+    },
+    {
+      "id": "r-ispm-1104",
+      "prod": "ispm",
+      "parent": "rn-ispm",
+      "ver": "4 Nov announcement",
+      "chan": "GA",
+      "date": "2026-11-04",
+      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/versions/release-ispm-2026-11-4.htm",
+      "items": [
+        "Endpoint shadow AI agent discovery through CrowdStrike Falcon: GA for ISPM and Okta for AI Agents customers"
+      ]
+    },
+    {
+      "id": "r-wf-1103",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.44.0",
+      "chan": "Production",
+      "date": "2026-11-03",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-44-0.htm",
+      "items": [
+        "RSS feeds for Preview and Production release notes",
+        "PKCE support for OAuth 2.0 authorization code in Integration Builder",
+        "1 fix"
+      ]
+    },
+    {
+      "id": "r-oag-1103",
+      "prod": "oag",
+      "parent": "rn-oag",
+      "ver": "2026.45.0",
+      "chan": "GA",
+      "date": "2026-11-03",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-45-0.htm",
+      "items": [
+        "Security enhancements"
       ]
     },
     {
@@ -21,10 +218,33 @@
       "ver": "2026.44.0",
       "chan": "Production",
       "date": "2026-11-02",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-44-0.htm",
       "items": [
-        "Scheduled. Dates are subject to change."
+        "Cross App Access for MCP servers; MCP servers as OAuth clients to downstream resources",
+        "XAA token analytics report",
+        "Import AI agents from UiPath, Relevance AI and Boomi; Gemini Enterprise Agent Platform import",
+        "Access tokens default to a single aud claim (orgs with multiple audiences enabled)",
+        "Client credentials grant for SCIM and API Integration Actions-based app integrations",
+        "Provisioning for Sourcegraph; On-Prem MFA agent 1.8.9, LDAP agent 5.26.1, Provisioning Agent 3.3.2",
+        "EA: Incremental imports for Office 365, Okta Verify Device Posture Sensor Mode (desktop and mobile), passkey groups matched on AAGUID alone",
+        "20 fixes"
+      ]
+    },
+    {
+      "id": "r-oce-1102",
+      "prod": "oce",
+      "parent": "rn-oce-prod",
+      "ver": "2026.44.0",
+      "chan": "Production",
+      "date": "2026-11-02",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-44-0.htm",
+      "items": [
+        "Gemini Enterprise Agent Platform import integration",
+        "Provisioning for Sourcegraph",
+        "Client credentials grant for SCIM and API Integration Actions-based app integrations",
+        "On-Prem MFA agent 1.8.9, LDAP agent 5.26.1, Provisioning Agent 3.3.2",
+        "EA: Incremental imports for Office 365",
+        "5 fixes"
       ]
     },
     {
@@ -34,7 +254,7 @@
       "ver": "2026.44.0",
       "chan": "Preview",
       "date": "2026-10-28",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-44-0.htm",
       "items": [
         "Cross App Access for MCP servers; MCP servers as OAuth clients to downstream resources",
         "XAA token analytics report",
@@ -54,7 +274,7 @@
       "ver": "2026.44.0",
       "chan": "Preview",
       "date": "2026-10-28",
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-44-0.htm",
       "items": [
         "HIGH_RISK_PROXIES category for Enhanced Dynamic Network Zones",
         "Incomplete app assignment tasks purged after six months",
@@ -88,7 +308,7 @@
       "ver": "2026.44.0",
       "chan": "Preview",
       "date": "2026-10-28",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/preview.htm",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-44-0.htm",
       "items": [
         "RSS feeds for Preview and Production release notes",
         "PKCE support for OAuth 2.0 authorization code in Integration Builder",
@@ -102,7 +322,7 @@
       "ver": "2026.44.1",
       "chan": "GA",
       "date": "2026-10-28",
-      "url": "https://help.okta.com/oag/en-us/Content/Topics/ReleaseNotes/oag/oag-release-notes.htm",
+      "url": "https://help.okta.com/oag/en-us/content/topics/releasenotes/oag/versions/release-oag-2026-44-1.htm",
       "items": [
         "Fix: intermittent HTTP 503 ACTIVE_DNS_FAILURE in 2026.9.2 to 2026.44.0 for backends without an IPv6 (AAAA) record",
         "APP_CONFIG logging for unreadable app config files; upstream DNS timeouts logged as SERVFAIL"
@@ -522,7 +742,7 @@
       "ver": "1 Sep announcements",
       "chan": "GA + EA",
       "date": "2026-09-01",
-      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm",
+      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/versions/release-ispm-2026-09-01.htm",
       "items": [
         "AI agent discovery for all ISPM customers",
         "EA: endpoint shadow AI agents and MCP servers via CrowdStrike Falcon",
@@ -575,7 +795,7 @@
       "ver": "5 Aug announcements",
       "chan": "EA",
       "date": "2026-08-05",
-      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm",
+      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/versions/release-ispm-2026-08-05.htm",
       "items": [
         "Advanced inventory filters (Limited EA)",
         "DORA, NIS2, CAF and TISAX on the Controls page"
@@ -613,7 +833,7 @@
       "ver": "3 Jun announcements",
       "chan": "GA",
       "date": "2026-06-03",
-      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/ispm-rn.htm",
+      "url": "https://help.okta.com/ispm/en-us/content/topics/releasenotes/ispm/versions/release-ispm-2026-06-03.htm",
       "items": [
         "CSV export up to 200,000 rows",
         "Redesigned outbound integrations, multiple instances per type"
