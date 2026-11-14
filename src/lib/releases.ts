@@ -34,7 +34,7 @@ export function relText(r: Release): string {
 
 /* Per-viewer storage. Wrapped because private windows can throw, and validated because
    anything in localStorage can be edited by the user or another script on the origin. */
-export const STORAGE_KEYS = ["oda-read", "oda-win", "oda-seen"] as const;
+export const STORAGE_KEYS = ["oda-read", "oda-win", "oda-seen", "oda-fx"] as const;
 
 export const store = {
   get<T>(k: string, d: T): T { try { const v = localStorage.getItem(k); return v == null ? d : (JSON.parse(v) as T); } catch { return d; } },
