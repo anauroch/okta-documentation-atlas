@@ -9,15 +9,15 @@ Live: https://okta-docs-atlas.lovable.app/
 
 Not affiliated with Okta. Every node links to the original page; the map holds titles and links, not the documentation text.
 
-## What's in the map (snapshot 14 Nov 2026)
+## What's in the map (snapshot 17 Nov 2026)
 
 | | Product docs | Developer docs |
 |---|---|---|
 | Source | help.okta.com | developer.okta.com sidebar navigation |
-| Nodes | 276 (216 pages, 60 release entries) | 385 pages |
+| Nodes | 280 (216 pages, 64 release entries) | 385 pages |
 | Depth | Product, section, page | Two to three levels below each section |
 | Tree last checked | 17 Oct 2026 (link check) | 14 Nov 2026 (first import) |
-| Release data | 14 Nov 2026, 60 entries | Links to the release-notes pages only |
+| Release data | 17 Nov 2026, 64 entries | Links to the release-notes pages only |
 
 **Product docs**, pages per doc set: Identity Engine 52, Workflows 28, ISPM 28, Managed MCP Server 24, Access Gateway 22, Classic Engine 10, Aerial 10, Resources 6, plus 26 release-notes pages.
 
@@ -27,17 +27,17 @@ Not affiliated with Okta. Every node links to the original page; the map holds t
 
 | Line | Latest | Date |
 |---|---|---|
-| Identity Engine | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 9 Nov |
-| Classic Engine | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 9 Nov |
+| Identity Engine | 2026.46.0 Production, 2026.46.0 Preview | 16 Nov, 12 Nov |
+| Classic Engine | 2026.46.0 Production, 2026.46.0 Preview | 16 Nov, 12 Nov |
 | Identity Governance | 2026.46.0 | 11 Nov |
 | Privileged Access | 2026.46.0 Preview | 12 Nov |
-| Workflows | 2026.46.0 Preview, 2026.45.1 Production | 12 Nov, 10 Nov |
+| Workflows | 2026.46.0 Production, 2026.46.0 Preview | 17 Nov, 12 Nov |
 | Managed MCP Server | 2026.45.1 (EA) | 11 Nov |
 | ISPM | Announcement | 4 Nov |
 | Access Gateway | 2026.45.0 | 3 Nov |
-| Aerial | 2026.41.0 | 7 Oct |
+| Aerial | 2026.46.0 | 12 Nov |
 
-Scheduled at the snapshot: Identity Engine 2026.46.0 Production (16 Nov) and 2026.47.1 Preview (18 Nov). The radar covers 1 Mar 2026 onward and is refreshed about twice a month; each refresh is reviewed by a person before it is committed. Notes on sources and gaps are under [Data notes](#data-notes-snapshot-14-nov-2026).
+Scheduled at the snapshot: Identity Engine 2026.47.1 Preview (18 Nov) and 2026.47.1 Production (30 Nov). The radar covers 1 Mar 2026 onward and is refreshed about twice a month; each refresh is reviewed by a person before it is committed. Notes on sources and gaps are under [Data notes](#data-notes-snapshot-17-nov-2026).
 
 ## Stack
 
@@ -116,17 +116,17 @@ A release counts as **New** when it shipped within the window the viewer picks (
 
 **Developer docs:** in `src/data/devTree.ts`, each section is a list of rows `[depth, label, path, legendGroup?]` in sidebar order. A row's parent is the nearest row above it with a smaller depth. Ids are derived from the path (`d-<slug>`).
 
-## Data notes (snapshot 14 Nov 2026)
+## Data notes (snapshot 17 Nov 2026)
 
 Product docs:
 
 - The map covers the main sections, not every page (Identity Engine and Access Gateway have 500+ pages each). Direct help.okta.com links were last status-checked on 17 Oct 2026; four that returned 404 were fixed or removed. Links through `okta_help.htm?id=…` resolve in the browser and weren't status-checked.
-- All 36 distinct release-note URLs in the radar were fetched on 14 Nov 2026 and resolve.
+- All 37 distinct release-note URLs in the radar were fetched on 18 Nov 2026 and resolve.
 - From October 2026, Okta versions use year.week instead of year.month: 2026.10.0 became 2026.41.0. Weekly updates keep the `.1`, `.2` suffix.
 - Okta now publishes per-version pages for Identity Engine, Classic Engine, Workflows and Access Gateway, and per-announcement pages for ISPM. Radar entries link to those, so the links no longer roll over. Okta keeps no Preview notes once a version is superseded, so older Preview entries link to the Production page of the same version.
 - Identity Governance, Privileged Access, Managed MCP Server and Aerial have no version pages. Their entries link to pages that show only the latest release.
-- Production can carry fewer features than the Preview of the same version did (2026.44.0 is an example), so the two entries are listed separately.
-- Identity Governance notes before 2026.46.0 carry no dates; those entries use the date of the matching Identity Engine release. Older Aerial entries show the month only.
+- Production and Preview notes for the same version can differ either way: 2026.44.0 Production dropped features the Preview had, and 2026.46.0 Production added Device-Bound SSO and Platform SSO features the Preview notes didn't list. The two entries are listed separately.
+- Identity Governance notes before 2026.46.0 carry no dates; those entries use the date of the matching Identity Engine release. Aerial entries before 2026.41.0 show the month only.
 - The Classic Engine 2026.09.0 production date is an estimate.
 
 Developer docs:
