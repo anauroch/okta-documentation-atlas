@@ -1,10 +1,11 @@
 /**
  * Optional "space" visuals for the 3D map: a starfield with slow parallax, a distant planet
- * system, asteroid formations, a comet, occasional shooting stars, and detailed wireframe
+ * system, asteroid formations, a comet, a distant ship, occasional shooting stars, and detailed wireframe
  * "balloon" nodes. Everything lives in the graph's own three.js scene so it moves with the camera.
  * Turned off, none of this is created and the map renders exactly as before.
  */
 import * as THREE from "three";
+import { createShip } from "./ship";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Obj = any;
@@ -42,12 +43,14 @@ const LOOKS = {
     moons: [[0x2cc2ac, 0x9ff0e4], [0xd9953a, 0xffd9a0]], companion: [0x7a63d6, 0xc3b5ff, 14], companionAt: [-640, 300, -900],
     rocks: [0x3a4252, 0x2f3644, 0x475062], formations: [[900, -640, -2400], [-1350, -760, -3000]], comet: 0xd6ecff, tail: [0.72, 0.86, 1],
     cometDir: [1, -0.16, 0.12], cometOff: [-150, 1080, -3100], suns: [] as number[][],
+    ship: { hull: 0x9aa6b8, dark: 0x3a4250, accent: 0x5fd4ff, plume: 0x8fd0ff, name: "OKTA DOCS", reg: "ODA-01 · HELP" }, shipDir: [-1, 0.05, -0.1], shipOff: [0, -980, -2700],
   },
   dev: {
     tints: WARM_TINTS, system: [1150, 560, -2900], planet: [0xc8742a, 0xffc37a, 13], wire: 0xffa24a, ring: 0xffd9a0, ringTilt: [1.45, -0.5],
     moons: [[0x4fb8c9, 0xb4f1ff], [0xb5483c, 0xff9d8a]], companion: [0x2f9a86, 0x9ff0d8, 6], companionAt: [700, -260, -700],
     rocks: [0x52433a, 0x40342e, 0x66544a], formations: [[-950, -600, -2500], [1400, -820, -3000]], comet: 0xd8ffe9, tail: [0.7, 1, 0.84],
     cometDir: [-1, -0.12, 0.1], cometOff: [150, 1120, -3100],
+    ship: { hull: 0xb8a690, dark: 0x4a3f36, accent: 0xffb45a, plume: 0xffc98a, name: "OKTA DOCS", reg: "ODA-02 · DEV" }, shipDir: [1, 0.06, -0.1], shipOff: [0, -1000, -2700],
     // [x, y, z, size, colour]: a close pair of stars far behind the map
     suns: [[-1900, 1150, -5200, 900, 0xffd08a], [-1620, 1010, -5300, 520, 0xff8f6b]],
   },
@@ -84,6 +87,19 @@ export interface SpaceFx {
   /** t and dt in seconds; camera is the graph camera (used to aim shooting stars into view) */
   update(t: number, dt: number, camera: Obj): void;
   dispose(): void;
+  /** the distant ship, for "fly to ship" and following it */
+  ship: {
+    label: string;
+    /** world position, heading and travel in units per second (zero when motion is reduced) */
+    position: Obj; heading: Obj; speed: number;
+    /** unit vector out of the ship's right-hand (+z) side, where its name plate faces right now */
+    side(out: Obj): Obj;
+    visible(): boolean;
+    /** stop or resume the slow roll, so a following camera keeps its view of the hull */
+    hold(on: boolean): void;
+    startEva(): void;
+    resetEva(): void;
+  };
 }
 
 /** @param still true when the viewer prefers reduced motion: same scenery, nothing moves */
@@ -181,6 +197,32 @@ export function createSpace(still: boolean, look: SpaceLook = "help"): SpaceFx {
   };
   newPass(true);
 
+  /* ---- distant ship: crosses the far background much slower than the comet, on its own path ---- */
+  const ship = createShip(L.ship, still);
+  root.add(ship.group);
+  const SHIP_SPEED = 16, SHIP_HALF = 3400; // a pass takes about seven minutes
+  const sDir = new THREE.Vector3(), sOff = new THREE.Vector3(), sAim = new THREE.Quaternion(), sRoll = new THREE.Quaternion();
+  let sS = 0, sRollA = 0, rollHeld = false;
+  const placeShip = () => {
+    ship.group.position.copy(sOff).addScaledVector(sDir, sS);
+    const edge = Math.max(0, Math.min(1, (SHIP_HALF - Math.abs(sS)) / 600));
+    ship.group.visible = edge > 0.02;
+    ship.group.scale.setScalar(0.6 + 0.4 * edge); // shrinks away at the ends of a pass instead of popping
+  };
+  const shipPass = (first: boolean) => {
+    if (first) { sDir.set(L.shipDir[0], L.shipDir[1], L.shipDir[2]).normalize(); sOff.set(L.shipOff[0], L.shipOff[1], L.shipOff[2]); sS = -900; }
+    else {
+      // keep the path on the far side from the comet's, and well outside the map
+      do { sDir.set(...onSphere(1)); sOff.set(...onSphere(1)); } while (sOff.dot(comet.position) > 0);
+      sOff.addScaledVector(sDir, -sOff.dot(sDir)).normalize().multiplyScalar(rand(2600, 3200));
+      sS = -SHIP_HALF;
+    }
+    sAim.setFromUnitVectors(X, sDir);
+    placeShip();
+  };
+  shipPass(true);
+  ship.group.quaternion.copy(sAim);
+
   /* ---- shooting stars: a small pool of streaks aimed into the camera's field of view ---- */
   const meteors = Array.from({ length: 3 }, () => {
     const geo = new THREE.BufferGeometry();
@@ -213,6 +255,10 @@ export function createSpace(still: boolean, look: SpaceLook = "help"): SpaceFx {
     rocks.forEach((k) => { k.o.rotation.x += dt * k.ax; k.o.rotation.y += dt * k.ay; if (k.r) { k.a += dt * k.w; placeRock(k); } });
     cS += dt * COMET_SPEED;
     if (cS > COMET_HALF) newPass(false); else placeComet();
+    sS += dt * SHIP_SPEED;
+    if (sS > SHIP_HALF) shipPass(false); else placeShip();
+    if (!rollHeld) sRollA += dt * 0.04; sRoll.setFromAxisAngle(X, sRollA); ship.group.quaternion.copy(sAim).multiply(sRoll);
+    ship.update(t, dt);
 
     nextMeteor -= dt;
     if (nextMeteor <= 0) { spawn(camera); nextMeteor = rand(6, 15); }
@@ -235,7 +281,15 @@ export function createSpace(still: boolean, look: SpaceLook = "help"): SpaceFx {
   const dispose = () => {
     root.traverse((o: Obj) => { o.geometry?.dispose?.(); const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach((x: Obj) => x.dispose?.()); });
   };
-  return { group: root, update, dispose };
+  const shipApi = {
+    label: L.ship.reg.split(" ")[0],
+    position: ship.group.position, heading: sDir, speed: still ? 0 : SHIP_SPEED,
+    side: (out: Obj) => out.set(0, 0, 1).applyQuaternion(ship.group.quaternion),
+    visible: () => ship.group.visible && Math.abs(sS) < SHIP_HALF - 700,
+    hold: (on: boolean) => { rollHeld = on; },
+    startEva: ship.startEva, resetEva: ship.resetEva,
+  };
+  return { group: root, update, dispose, ship: shipApi };
 }
 
 /* ====================== detailed nodes ====================== */
