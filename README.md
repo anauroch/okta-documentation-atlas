@@ -79,6 +79,7 @@ src/
     AtlasGraph.tsx  3D graph, HTML label layer, dot popovers, zoom controls, legend
     spaceFx.ts      Optional space scenery and detailed nodes (the header's Effects switch)
     jumpGate.ts     The jump gate that links the two systems in the 3D map
+    ship.ts         A distant ship in the scenery: click it (or Fly to → Ship) to follow it and watch a short crew walk
     ReleaseRadar.tsx
     DetailCard.tsx
   pages/Index.tsx   Page layout and shared state
