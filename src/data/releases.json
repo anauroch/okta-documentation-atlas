@@ -1,6 +1,19 @@
 {
-  "snapshotDate": "2026-11-14",
+  "snapshotDate": "2026-11-17",
   "releases": [
+    {
+      "id": "r-oie-1130",
+      "prod": "oie",
+      "parent": "rn-oie-prod",
+      "ver": "2026.47.1",
+      "chan": "Production",
+      "date": "2026-11-30",
+      "upcoming": true,
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "items": [
+        "Scheduled. Dates are subject to change."
+      ]
+    },
     {
       "id": "r-oie-1118",
       "prod": "oie",
@@ -15,16 +28,67 @@
       ]
     },
     {
+      "id": "r-wf-1117",
+      "prod": "wf",
+      "parent": "rn-wf-prod",
+      "ver": "2026.46.0",
+      "chan": "Production",
+      "date": "2026-11-17",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "items": [
+        "Client token no longer appears in Invoke and Resume URLs (send it in the x-api-client-token header)",
+        "Harmony SASE connector renamed to Check Point SASE",
+        "4 fixes"
+      ]
+    },
+    {
+      "id": "r-oce-1116",
+      "prod": "oce",
+      "parent": "rn-oce-prod",
+      "ver": "2026.46.0",
+      "chan": "Production",
+      "date": "2026-11-16",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-46-0.htm",
+      "items": [
+        "Workday incremental imports and import scheduling (slow rollout, all orgs by early December)",
+        "Access Request task assignee limit increased to 50",
+        "On-Prem MFA agent 1.8.9, Active Directory agent 3.24.0",
+        "EA: Admin Console banner for paused imports",
+        "1 fix"
+      ]
+    },
+    {
       "id": "r-oie-1116",
       "prod": "oie",
       "parent": "rn-oie-prod",
       "ver": "2026.46.0",
       "chan": "Production",
       "date": "2026-11-16",
-      "upcoming": true,
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/okta-relnotes.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-46-0.htm",
       "items": [
-        "Scheduled. Dates are subject to change."
+        "Device-Bound Single Sign-On for Okta-joined macOS and Windows devices",
+        "Platform SSO: password integration with Device-Bound SSO, Secure Enclave key support",
+        "Desktop MFA Factor Discovery for Windows",
+        "Enhanced breached credentials protection for OWI",
+        "Workday incremental imports and import scheduling (slow rollout, all orgs by early December)",
+        "User email addresses in the Cross App Access Token Analytics report; email auto-enroll note for authenticator sets",
+        "Passkey button per app in user identification policy rules; AI agent profile attributes as custom claims",
+        "Access Request task assignee limit increased to 50; On-Prem MFA agent 1.8.9, Active Directory agent 3.24.0",
+        "EA: Attack protection policy, Admin Console banner for paused imports",
+        "7 fixes"
+      ]
+    },
+    {
+      "id": "r-aer-046",
+      "prod": "aerial",
+      "parent": "rn-aer",
+      "ver": "2026.46.0",
+      "chan": "GA",
+      "date": "2026-11-12",
+      "url": "https://help.okta.com/aerial/en-us/content/topics/releasenotes/aerial/aerial-releasenotes.htm",
+      "items": [
+        "RSS feeds for Aerial release notes",
+        "1 fix (SKU updates failed when the org blocked traffic from Japan)"
       ]
     },
     {
@@ -34,7 +98,7 @@
       "ver": "2026.46.0",
       "chan": "Preview",
       "date": "2026-11-12",
-      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/oie/en-us/content/topics/releasenotes/versions/release-prod-2026-46-0.htm",
       "items": [
         "Enhanced breached credentials protection for OWI",
         "Multiple actions in entity risk policy rules",
@@ -52,7 +116,7 @@
       "ver": "2026.46.0",
       "chan": "Preview",
       "date": "2026-11-12",
-      "url": "https://help.okta.com/en-us/content/topics/releasenotes/preview.htm",
+      "url": "https://help.okta.com/en-us/content/topics/releasenotes/versions/release-prod-2026-46-0.htm",
       "items": [
         "Access Request task assignee limit increased",
         "Salesforce My Domain integration",
@@ -125,7 +189,7 @@
       "ver": "2026.45.1",
       "chan": "Production",
       "date": "2026-11-10",
-      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/production.htm",
+      "url": "https://help.okta.com/wf/en-us/content/topics/releasenotes/workflows/versions/release-wf-2026-45-1.htm",
       "items": [
         "None security option removed for new API Endpoint flows (existing flows unchanged)",
         "4 fixes"
