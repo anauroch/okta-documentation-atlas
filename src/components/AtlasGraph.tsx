@@ -4,6 +4,7 @@ import type { Atlas, AtlasLink, AtlasNode, ProductKey } from "@/data/types";
 import { isHot, isNew, isUpcoming, weekOf } from "@/lib/releases";
 import { animateNode, buildNode, createSpace, styleNode, type NodeLook, type SpaceFx } from "@/components/spaceFx";
 import { createGate, GATE_R, type JumpGate } from "@/components/jumpGate";
+const SHIP = "__ship"; // "Fly to" value for the distant ship
 
 export type Mode = "all" | "docs" | "rn";
 
@@ -72,6 +73,14 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   popIdRef.current = popId;
   useEffect(() => { dirty.current = true; }, [popId]);
   const [rotating, setRotating] = useState(false);
+  /** following the ship: the camera and orbit target move with it, so the view can still be orbited and zoomed */
+  const [following, setFollowing] = useState(false);
+  const follow = useRef<{ on: boolean; last: { x: number; y: number; z: number } }>({ on: false, last: { x: 0, y: 0, z: 0 } });
+  const stopFollow = () => {
+    if (!follow.current.on) return;
+    follow.current.on = false; setFollowing(false);
+    const sh = space.current?.ship; sh?.hold(false); sh?.resetEva(); // "Back to map" ends the EVA and puts the crew back inside
+  };
   const arrived = useRef(false);
 
   const lblEls = useRef<Record<string, HTMLDivElement>>({});
@@ -162,6 +171,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
 
   const flyTo = (id: string, tries = 0) => {
     const G = graph.current; const n = BY_ID[id]; if (!n) return;
+    stopFollow();
     // deep links arrive before the force layout has positions: retry for up to ~10 s
     if (!G || n.x == null) { if (tries < 30) setTimeout(() => flyTo(id, tries + 1), 350); return; }
     const d = n.level === 0 ? 520 : n.level === 1 ? 330 : 150;
@@ -171,6 +181,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   /** Frame the whole map. With the gate in the scene the view is widened to include it; otherwise this is the library's own fit. */
   const fitAll = (ms: number) => {
     const G = graph.current; if (!G) return;
+    stopFollow();
     const g = gate.current;
     if (!g) { G.zoomToFit(ms, 30); return; }
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, z0 = Infinity, z1 = -Infinity;
@@ -193,6 +204,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   };
   const jumpOut = () => new Promise<void>((done) => {
     const G = graph.current, g = gate.current;
+    stopFollow();
     if (!G || !g || reducedMotion()) { done(); return; }
     setPopId(null); g.charge();
     const p = g.position, n = g.normal, at = (k: number) => ({ x: p.x + n.x * k, y: p.y + n.y * k, z: p.z + n.z * k });
@@ -204,6 +216,28 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
     const G = graph.current; if (!G) return;
     const cam = G.camera().position, t = G.controls().target || { x: 0, y: 0, z: 0 };
     G.cameraPosition({ x: t.x + (cam.x - t.x) * f, y: t.y + (cam.y - t.y) * f, z: t.z + (cam.z - t.z) * f }, t, reducedMotion() ? 0 : 350);
+  };
+
+  /** Fly alongside the ship, level with its name plate, then keep pace with it. */
+  const flyToShip = () => {
+    const G = graph.current, sh = space.current?.ship; if (!G || !sh) return;
+    setPopId(null);
+    const ms = reducedMotion() ? 0 : 1600;
+    const V = G.camera().position.constructor;
+    const side = sh.side(new V()), up = new V().crossVectors(side, sh.heading).normalize();
+    // aim where the ship will be when the camera arrives
+    const p = new V().copy(sh.position).addScaledVector(sh.heading, (sh.speed * ms) / 1000);
+    // frame the forward half: the name plate and the dorsal hatch where the crew member comes out
+    const look = new V().copy(p).addScaledVector(sh.heading, 62).addScaledVector(up, 8);
+    const cam = new V().copy(look).addScaledVector(side, 215).addScaledVector(up, 85).addScaledVector(sh.heading, -25);
+    follow.current.on = false;
+    G.cameraPosition({ x: cam.x, y: cam.y, z: cam.z }, { x: look.x, y: look.y, z: look.z }, ms);
+    setTimeout(() => {
+      const s2 = space.current?.ship; if (!s2) return;
+      follow.current = { on: true, last: { x: s2.position.x, y: s2.position.y, z: s2.position.z } };
+      setFollowing(true); setRotating(false);
+      s2.hold(true); s2.startEva();
+    }, ms + 30);
   };
 
   useImperativeHandle(ref, () => ({ flyTo: (id: string) => flyTo(id), openPopover: (id) => setPopId(id), fit, jumpOut }));
@@ -257,13 +291,26 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       const g = gate.current, d = downAt; downAt = null;
       if (!g || !d || Math.hypot(e.clientX - d[0], e.clientY - d[1]) > 5) return; // a drag orbits the map
       const [x, y] = ndcOf(e);
-      if (g.hit(x, y, G.camera())) propsRef.current.onJump();
+      if (g.hit(x, y, G.camera())) { propsRef.current.onJump(); return; }
+      if (overShip(e)) flyToShip();
+    };
+    /** the ship is tiny on screen: hit when the pointer is within a few pixels of its hull line */
+    const overShip = (e: PointerEvent) => {
+      const sh = space.current?.ship; if (!propsRef.current.fx || !sh || !sh.visible()) return false;
+      const r = el.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+      const P = sh.position, H = sh.heading;
+      const a = G.graph2ScreenCoords(P.x + H.x * 150, P.y + H.y * 150, P.z + H.z * 150);
+      const b = G.graph2ScreenCoords(P.x - H.x * 150, P.y - H.y * 150, P.z - H.z * 150);
+      const vx = b.x - a.x, vy = b.y - a.y, L2 = vx * vx + vy * vy || 1;
+      const t = Math.max(0, Math.min(1, ((px - a.x) * vx + (py - a.y) * vy) / L2));
+      return Math.hypot(px - (a.x + vx * t), py - (a.y + vy * t)) < 14;
     };
     const onMove = (e: PointerEvent) => {
       const g = gate.current; if (!g) return;
       const now = performance.now(); if (now - hoverT < 60) return; hoverT = now;
       const [x, y] = ndcOf(e), over = g.hit(x, y, G.camera());
       g.setHover(over); stage.classList.toggle("gate-hover", over);
+      stage.classList.toggle("ship-hover", !over && overShip(e));
     };
     el.addEventListener("pointerdown", onDown); el.addEventListener("pointerup", onUp); el.addEventListener("pointermove", onMove);
 
@@ -279,6 +326,17 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       const now = performance.now(), dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
       if (propsRef.current.fx && space.current) {
         space.current.update(now / 1000, dt, G.camera());
+        if (follow.current.on) {
+          // carry the camera and the orbit target along by however far the ship moved this frame
+          const P = space.current.ship.position, l = follow.current.last;
+          const dx = P.x - l.x, dy = P.y - l.y, dz = P.z - l.z;
+          if (dx || dy || dz) {
+            const c = G.camera().position, tg = G.controls().target;
+            c.set(c.x + dx, c.y + dy, c.z + dz); tg?.set(tg.x + dx, tg.y + dy, tg.z + dz);
+            l.x = P.x; l.y = P.y; l.z = P.z;
+          }
+          if (!space.current.ship.visible()) stopFollow(); // the pass is ending
+        }
         gate.current?.update(now / 1000, dt);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (!reducedMotion()) NODES.forEach((n) => { const o = (n as any).__threeObj; if (o?.userData?.fx) animateNode(o, now / 1000, dt); });
@@ -310,7 +368,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
         const n = BY_ID[pid];
         if (n && n.x != null) {
           const c = G.graph2ScreenCoords(n.x, n.y, n.z);
-          const w = box.clientWidth, h = box.clientHeight, pw = pop.offsetWidth;
+          const w = stage.clientWidth, h = stage.clientHeight, pw = pop.offsetWidth; // the label layer is hidden while following, so measure the stage
           const left = c.x + pw + 30 > w ? Math.max(4, c.x - pw - 28) : c.x;
           pop.style.left = left + "px";
           pop.style.top = Math.min(Math.max(c.y, pop.offsetHeight / 2 + 6), h - pop.offsetHeight / 2 - 6) + "px";
@@ -365,6 +423,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       }
       G.nodeThreeObject((n: AtlasNode) => buildNode(lookOf(n)));
     } else {
+      stopFollow();
       if (space.current) G.scene().remove(space.current.group);
       if (gate.current) { G.scene().remove(gate.current.group); gate.current.dispose(); gate.current = null; stageRef.current?.classList.remove("gate-hover"); }
       G.nodeThreeObject(() => undefined); // back to the built-in spheres
@@ -376,7 +435,7 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
   const pop = popId ? BY_ID[popId] : null;
 
   return (
-    <section ref={stageRef} className={"stage" + (props.fx ? " fx" : "") + (A.id === "dev" ? " dev" : "")} aria-label={`3D map of ${A.host}`}>
+    <section ref={stageRef} className={"stage" + (props.fx ? " fx" : "") + (A.id === "dev" ? " dev" : "") + (following ? " following" : "")} aria-label={`3D map of ${A.host}`}>
       <div ref={graphEl} className="absolute inset-0" />
       <div ref={labelsEl} className="labels" />
       {props.fx && (
@@ -387,6 +446,12 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
       )}
       <div ref={warpEl} className={"warp" + (props.arrive && props.fx ? " arrive" : "")} aria-hidden="true" />
       <div className="hint">Drag to orbit · scroll to zoom · click any dot to open its page</div>
+      {following && (
+        <div className="ship-chip" role="status">
+          <span>Following {space.current?.ship.label}</span>
+          <button onClick={fit}>Back to map</button>
+        </div>
+      )}
 
       <div className="zoom" aria-label="Zoom controls">
         <div className="grp">
@@ -398,9 +463,10 @@ const AtlasGraph = forwardRef<AtlasGraphHandle, AtlasGraphProps>(function AtlasG
           )}
         </div>
         <select id="z-focus" aria-label="Fly to product" value=""
-          onChange={(e) => { const id = e.target.value; if (id) { props.onSelect(id); flyTo(id); setPopId(id); } }}>
+          onChange={(e) => { const id = e.target.value; if (id === SHIP) flyToShip(); else if (id) { props.onSelect(id); flyTo(id); setPopId(id); } }}>
           <option value="">Fly to…</option>
           {NODES.filter((n) => n.level === 1).map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}
+          {props.fx && <option value={SHIP}>Ship {space.current?.ship.label ?? ""}</option>}
         </select>
         <span className="lvl" ref={zoomLvl}>zoom 100%</span>
       </div>
