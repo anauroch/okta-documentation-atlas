@@ -248,3 +248,11 @@ code{font-family:var(--mono);font-size:.92em}
 .warp.arrive{animation:warp-out 1.1s ease-out .15s both}
 @keyframes warp-out{from{opacity:1}to{opacity:0}}
 @media (prefers-reduced-motion:reduce){.stagewrap>.stage{animation:none !important}.warp{display:none}}
+
+/* ---------- distant ship: hover, and the chip shown while the camera follows it ---------- */
+.stage.ship-hover canvas{cursor:pointer !important}
+/* the map is far behind the camera while following: its labels would only clutter the view */
+.stage.following .labels,.stage.following .gate-lbl,.stage.following .pop{display:none !important}
+.ship-chip{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;white-space:nowrap;
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--label-bg);border:1px solid var(--line);border-radius:8px;padding:4px 6px 4px 10px}
+.ship-chip button{font-family:var(--body);font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;background:var(--accent);color:#fff}
